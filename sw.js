@@ -4,7 +4,7 @@ const ASSETS = [
   './',
   './index.html',
   './manifest.json',
-  './LogoVC.png'
+  './LogoVC.png',
   './android-icon-192x192.png'
 ];
 
