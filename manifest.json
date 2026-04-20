@@ -1,0 +1,5 @@
+{ "short_name": "VocesApp", "name": "Emisora Digital Voces Campesinas", "description": "El Campo Nos Une", "icons":
+
+$${ "src": "android-icon-192x192.png", "type": "image/png", "sizes": "192x192", "purpose": "any maskable" }, { "src": "LogoVC.png", "type": "image/png", "sizes": "512x512", "purpose": "any maskable" }$$
+
+, "start_url": "./index.html", "background_color": "#1a080a", "display": "standalone", "scope": "./", "theme_color": "#421015", "orientation": "portrait-primary" }
