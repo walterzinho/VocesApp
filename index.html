@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emisora Digital Voces Campesinas</title>
+    
+    <!-- Favicon y Iconos -->
+    <link rel="icon" type="image/png" href="LogoVC.png">
+    <link rel="shortcut icon" href="LogoVC.png" type="image/x-icon">
+    <link rel="apple-touch-icon" href="android-icon-192x192.png">
+    
+    <!-- Configuración para PWA -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#421015">
+    
+    <!-- Tailwind CSS para el diseño -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- React y Babel para procesar el código -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        .volume-slider::-webkit-slider-thumb { appearance: none; width: 14px; height: 14px; background: white; border-radius: 50%; cursor: pointer; border: 2px solid #421015; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        body { overscroll-behavior: none; background: #1a080a; font-family: sans-serif; }
+        
+        /* Animación para el botón de instalación */
+        @keyframes bounce-slow {
+          0%, 100% { transform: translateY(-5%); }
+          50% { transform: translateY(0); }
+        }
+        .animate-bounce-slow { animation: bounce-slow 3s infinite; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+        
+        // Iconos de Lucide
+        const Icon = ({ name, size = 20, className = "" }) => {
+            useEffect(() => {
+                if (window.lucide) window.lucide.createIcons();
+            }, [name, size, className]);
+            return <i data-lucide={name} style={{ width: size, height: size }} className={className}></i>;
+        };
+
+        const RADIO_CONFIG = {
+            name: "Voces Campesinas",
+            streamUrl: "https://a1.asurahosting.com/listen/voces_campesinas/radio.mp3",
+            logoPath: "LogoVC.png", 
+            whatsapp: "573224626138",
+            youtubeUrl: "https://www.youtube.com/@VocesCampesinasCo",
+            email: "emisora@vocescampesinas.co",
+            webUrl: "https://www.vocescampesinas.co"
+        };
+
+        const CAT_CONFIG = {
+            propio: { label: "Programas Propios", icon: "star", color: "text-green-400" },
+            franja: { label: "Franjas Musicales", icon: "music", color: "text-blue-400" },
+            entidad: { label: "Convenios y Externos", icon: "users", color: "text-purple-400" },
+            reemision: { label: "Reemisiones", icon: "rotate-ccw", color: "text-yellow-400" }
+        };
+
+        const SCHEDULE = [
+            { start: "00:00", end: "04:59", title: "La Licuadora", host: "Franja Crossover", category: "franja", days: [1, 2, 3, 4, 5, 6, 0] },
+            { start: "05:30", end: "05:59", title: "Alborada Campesina", host: "Música Colombiana", category: "franja", days: [1, 2, 3, 4, 5, 6, 0] },
+            { start: "19:30", end: "20:29", title: "Palabras del Territorio", host: "Walter Sosa", category: "propio", days: [2, 6] },
+            { start: "21:30", end: "23:59", title: "Cuentos y Leyendas", host: "Abuelo Ricardo", category: "propio", days: [2, 3, 4, 5] },
+            { start: "07:30", end: "11:00", title: "Magazín Región Activa", host: "Jotta Ricón - Walter Sosa", category: "entidad", days: [6, 3] }
+        ];
+
+        const DAYS_NAMES = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
+        const timeToMinutes = (timeStr) => {
+            const [h, m] = timeStr.split(':').map(Number);
+            return h * 60 + m;
+        };
+
+        const App = () => {
+            const [isPlaying, setIsPlaying] = useState(false);
+            const [volume, setVolume] = useState(0.8);
+            const [currentView, setCurrentView] = useState('home');
+            const [currentProgram, setCurrentProgram] = useState(null);
+            const [nextProgram, setNextProgram] = useState(null);
+            const [formType, setFormType] = useState('mensaje'); 
+            const [requestData, setRequestData] = useState({ nombre: '', cancion: '', interprete: '', mensaje: '' });
+            
+            const [deferredPrompt, setDeferredPrompt] = useState(null);
+            const [showInstallBtn, setShowInstallBtn] = useState(false);
+
+            const audioRef = useRef(null);
+
+            useEffect(() => {
+                if ('serviceWorker' in navigator) {
+                    window.addEventListener('load', () => {
+                        navigator.serviceWorker.register('sw.js').catch(err => console.log('SW reg error:', err));
+                    });
+                }
+
+                window.addEventListener('beforeinstallprompt', (e) => {
+                    e.preventDefault();
+                    setDeferredPrompt(e);
+                    setShowInstallBtn(true);
+                });
+
+                const update = () => {
+                    const now = new Date();
+                    const cur = now.getHours() * 60 + now.getMinutes();
+                    const day = now.getDay();
+                    const prog = SCHEDULE.find(p => cur >= timeToMinutes(p.start) && cur < timeToMinutes(p.end) && (p.days ? p.days.includes(day) : true));
+                    let up = SCHEDULE.filter(p => p.days ? p.days.includes(day) : true).sort((a,b) => timeToMinutes(a.start) - timeToMinutes(b.start)).find(p => timeToMinutes(p.start) > cur);
+                    if(!up) up = SCHEDULE.filter(p => p.days ? p.days.includes((day+1)%7) : true).sort((a,b) => timeToMinutes(a.start) - timeToMinutes(b.start))[0];
+                    setCurrentProgram(prog || null);
+                    setNextProgram(up || null);
+                };
+                update();
+                const interval = setInterval(update, 30000);
+                return () => clearInterval(interval);
+            }, []);
+
+            const installApp = async () => {
+                if (!deferredPrompt) return;
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                if (outcome === 'accepted') {
+                    setShowInstallBtn(false);
+                }
+                setDeferredPrompt(null);
+            };
+
+            const togglePlay = () => {
+                if (!isPlaying) {
+                    if(!audioRef.current.src) audioRef.current.src = RADIO_CONFIG.streamUrl;
+                    audioRef.current.play();
+                } else {
+                    audioRef.current.pause();
+                }
+                setIsPlaying(!isPlaying);
+            };
+
+            const sendWp = (e) => {
+                e.preventDefault();
+                let text = "👋 ¡Hola Voces Campesinas! 📻\n\nEnvio lo siguiente:\n\n";
+                if(formType === 'cancion') {
+                    text += "🎵 *PEDIDO MUSICAL*\n*Nombre:* " + requestData.nombre + "\n*Cancion:* " + requestData.cancion + "\n*Artista:* " + requestData.interprete + "\n";
+                } else {
+                    text += "💬 *SALUDO*\n*De:* " + requestData.nombre + "\n";
+                }
+                text += "\n✍️ *Mensaje:* " + requestData.mensaje;
+                window.open(`https://api.whatsapp.com/send?phone=${RADIO_CONFIG.whatsapp}&text=${encodeURIComponent(text)}`, '_blank');
+            };
+
+            const renderContent = () => {
+                if(currentView === 'schedule') return (
+                    <div className="p-5 pb-48 animate-in fade-in duration-500 max-w-sm mx-auto">
+                        <h2 className="text-2xl font-black text-center mb-8 uppercase tracking-tighter">Programación</h2>
+                        {Object.keys(CAT_CONFIG).map(cat => {
+                            const progs = SCHEDULE.filter(p => p.category === cat);
+                            if(progs.length === 0) return null;
+                            return (
+                                <div key={cat} className="mb-8">
+                                    <div className="flex items-center gap-2 mb-4 opacity-50">
+                                        <Icon name={CAT_CONFIG[cat].icon} size={16} className={CAT_CONFIG[cat].color} />
+                                        <span className="text-[10px] font-black uppercase tracking-widest">{CAT_CONFIG[cat].label}</span>
+                                    </div>
+                                    {progs.map((p, i) => (
+                                        <div key={i} className="bg-white/5 border border-white/5 p-4 rounded-xl mb-3">
+                                            <div className="text-red-400 text-xs font-black mb-1">{p.start} - {p.end}</div>
+                                            <div className="font-bold text-lg">{p.title}</div>
+                                            <div className="text-white/40 text-xs italic">con {p.host}</div>
+                                        </div>
+                                    ))}
+                                </div>
+                            );
+                        })}
+                    </div>
+                );
+
+                if(currentView === 'social') return (
+                    <div className="p-6 pb-48 text-center animate-in fade-in max-w-sm mx-auto">
+                        <h2 className="text-2xl font-black mb-1 uppercase tracking-tighter">Nuestras Redes</h2>
+                        <p className="text-red-500 text-[10px] font-black tracking-widest mb-10">¡EL CAMPO NOS UNE!</p>
+                        <div className="space-y-3">
+                            {[
+                                { n: 'Página Web', i: 'globe', u: RADIO_CONFIG.webUrl, c: 'text-green-400' },
+                                { n: 'YouTube', i: 'youtube', u: RADIO_CONFIG.youtubeUrl, c: 'text-red-600' },
+                                { n: 'Facebook', i: 'facebook', u: 'https://facebook.com/VocesCampesinas.co', c: 'text-blue-500' },
+                                { n: 'Instagram', i: 'instagram', u: 'https://instagram.com/vocescampesinas.co/', c: 'text-pink-500' }
+                            ].map(s => (
+                                <button key={s.n} onClick={() => window.open(s.u, '_blank')} className="w-full flex items-center justify-between p-4 bg-white/5 rounded-xl border border-white/5">
+                                    <div className="flex items-center gap-3"><Icon name={s.i} className={s.c} /><span className="text-xs font-black uppercase">{s.n}</span></div>
+                                    <Icon name="external-link" size={12} className="opacity-20" />
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                );
+
+                if(currentView === 'whatsapp') return (
+                    <div className="p-6 pb-48 animate-in slide-in-from-bottom-4 max-w-sm mx-auto">
+                        <h2 className="text-2xl font-black text-center mb-1 uppercase tracking-tighter">Escríbenos</h2>
+                        <p className="text-red-500 text-[10px] font-black tracking-widest text-center mb-8">PEDIDOS Y SALUDOS</p>
+                        <div className="flex gap-2 mb-6 bg-black/40 p-1 rounded-xl">
+                            <button onClick={() => setFormType('mensaje')} className={`flex-1 py-2 rounded-lg text-[10px] font-black uppercase ${formType === 'mensaje' ? 'bg-red-600' : 'text-white/40'}`}>Mensaje</button>
+                            <button onClick={() => setFormType('cancion')} className={`flex-1 py-2 rounded-lg text-[10px] font-black uppercase ${formType === 'cancion' ? 'bg-red-600' : 'text-white/40'}`}>Canción</button>
+                        </div>
+                        <form onSubmit={sendWp} className="space-y-4">
+                            <input required placeholder="Tu Nombre" className="w-full bg-white/5 border border-white/10 p-3 rounded-xl text-sm" onChange={e => setRequestData({...requestData, nombre: e.target.value})} />
+                            {formType === 'cancion' && (
+                                <>
+                                    <input required placeholder="Nombre de la canción" className="w-full bg-white/5 border border-white/10 p-3 rounded-xl text-sm" onChange={e => setRequestData({...requestData, cancion: e.target.value})} />
+                                    <input required placeholder="Artista" className="w-full bg-white/5 border border-white/10 p-3 rounded-xl text-sm" onChange={e => setRequestData({...requestData, interprete: e.target.value})} />
+                                </>
+                            )}
+                            <textarea required placeholder="Mensaje..." rows="3" className="w-full bg-white/5 border border-white/10 p-3 rounded-xl text-sm" onChange={e => setRequestData({...requestData, mensaje: e.target.value})}></textarea>
+                            <button className="w-full bg-red-600 py-4 rounded-xl font-black uppercase text-sm shadow-xl shadow-red-900/20">Enviar a WhatsApp</button>
+                        </form>
+                    </div>
+                );
+
+                return (
+                    <div className="flex flex-col items-center justify-center min-h-[60vh] text-center p-6 max-w-sm mx-auto">
+                        <div className="relative mb-8">
+                            <div className={`absolute -inset-10 bg-red-600/10 rounded-full blur-[40px] transition-opacity duration-[3s] ${isPlaying ? 'opacity-100' : 'opacity-0'}`}></div>
+                            <div className="relative w-48 h-48 rounded-2xl border-4 border-black/40 shadow-2xl overflow-hidden">
+                                <img src={RADIO_CONFIG.logoPath} className={`w-full h-full object-cover transition-transform duration-[20s] ${isPlaying ? 'scale-110' : ''}`} onError={e => e.target.src="https://images.unsplash.com/photo-1516733968668-dbdce39c46ef?q=80&w=600"} />
+                                {!isPlaying && <div className="absolute inset-0 bg-black/40 flex items-center justify-center"><Icon name="play" size={40} className="opacity-80" /></div>}
+                            </div>
+                        </div>
+                        <div className="mb-8">
+                            <p className="text-[10px] font-black text-red-500 uppercase tracking-[0.4em]">Emisora Digital</p>
+                            <h1 className="text-3xl font-black py-1">Voces <span className="text-red-600">Campesinas</span></h1>
+                            <p className="text-sm font-medium text-white/40 italic">"El campo Nos Une"</p>
+                        </div>
+                        
+                        {showInstallBtn && (
+                           <button onClick={installApp} className="mb-8 bg-white/10 border border-white/20 px-6 py-3 rounded-xl flex items-center gap-3 text-xs font-black uppercase tracking-widest animate-bounce-slow">
+                              <Icon name="download" size={16} className="text-red-500" />
+                              Instalar aplicación
+                           </button>
+                        )}
+
+                        <div className="w-full bg-white/5 border border-white/10 p-5 rounded-2xl text-left flex items-start gap-4">
+                            <div className="p-2.5 bg-red-600/10 rounded-xl"><Icon name="chevron-right" className="text-red-500" /></div>
+                            <div className="overflow-hidden">
+                                <p className="text-[10px] font-black text-red-400 uppercase tracking-widest mb-1">Siguiente programa</p>
+                                <h3 className="font-black truncate">{nextProgram ? nextProgram.title : "Música Variada"}</h3>
+                                <p className="text-xs text-white/40 italic capitalize">{nextProgram ? `${nextProgram.start} con ${nextProgram.host}` : "La Mejor Música De La Tierrita"}</p>
+                            </div>
+                        </div>
+                    </div>
+                );
+            };
+
+            return (
+                <div className="min-h-screen bg-gradient-to-b from-[#421015] to-[#1a080a] text-white flex flex-col">
+                    <audio ref={audioRef} preload="auto" />
+                    <header className="fixed top-0 w-full h-16 bg-black/20 backdrop-blur-xl z-40 flex items-center justify-center border-b border-white/5">
+                        <span className="font-black text-lg">www.<span className="text-red-500">VocesCampesinas</span>.co</span>
+                    </header>
+                    <main className="flex-1 pt-16">{renderContent()}</main>
+                    <div className="fixed bottom-0 w-full z-50">
+                        <div className="px-4 pb-4">
+                            <div className="max-w-md mx-auto bg-black/60 backdrop-blur-2xl rounded-2xl border border-white/10 p-4 shadow-2xl">
+                                <div className="flex items-center justify-between gap-4 mb-3">
+                                    <div className="flex-1 min-w-0">
+                                        <div className="flex items-center gap-2 mb-1">
+                                            <div className={`w-1.5 h-1.5 rounded-full ${isPlaying ? 'bg-red-500 animate-pulse' : 'bg-white/20'}`}></div>
+                                            <span className="text-[10px] font-black text-red-500/80 uppercase tracking-widest">{isPlaying ? 'Al Aire' : 'Detenida'}</span>
+                                        </div>
+                                        <div className="text-sm font-bold truncate">{currentProgram?.title || "La Mejor Música de la Tierrita"}</div>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <button onClick={() => {audioRef.current.pause(); audioRef.current.src=""; setIsPlaying(false);}} className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center"><Icon name="square" size={16} /></button>
+                                        <button onClick={togglePlay} className="w-12 h-12 bg-white text-[#421015] rounded-2xl flex items-center justify-center shadow-lg">{isPlaying ? <Icon name="pause" size={24} /> : <Icon name="play" size={24} className="ml-1" />}</button>
+                                    </div>
+                                </div>
+                                <div className="flex items-center gap-4">
+                                    <Icon name={volume == 0 ? "volume-x" : "volume-2"} size={16} className="opacity-40" />
+                                    <input type="range" min="0" max="1" step="0.01" value={volume} onChange={e => {setVolume(e.target.value); audioRef.current.volume = e.target.value;}} className="flex-1 h-1 bg-white/10 rounded-full appearance-none volume-slider" />
+                                </div>
+                            </div>
+                        </div>
+                        <nav className="bg-black/90 border-t border-white/5 px-4 pt-3 pb-8 flex justify-around">
+                            {[
+                                { id: 'home', l: 'Radio', i: 'home' },
+                                { id: 'schedule', l: 'Horarios', i: 'calendar' },
+                                { id: 'social', l: 'Redes', i: 'share-2' },
+                                { id: 'whatsapp', l: 'Pedir', i: 'message-circle' }
+                            ].map(t => (
+                                <button key={t.id} onClick={() => setCurrentView(t.id)} className={`flex flex-col items-center gap-1 ${currentView === t.id ? 'text-white' : 'text-white/30'}`}>
+                                    <div className={`p-2 rounded-xl ${currentView === t.id ? 'bg-red-600/20' : ''}`}><Icon name={t.i} size={20} /></div>
+                                    <span className="text-[9px] font-black uppercase">{t.l}</span>
+                                </button>
+                            ))}
+                        </nav>
+                    </div>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
