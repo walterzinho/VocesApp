@@ -24,13 +24,10 @@
     <!-- ========================================================
          SECCIÓN: LIBRERÍAS EXTERNAS
          ======================================================== -->
-    <!-- Tailwind CSS: Para el diseño rápido con clases -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- React & Babel: Para la lógica de la aplicación -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <!-- Lucide Icons: Iconografía general -->
     <script src="https://unpkg.com/lucide@latest"></script>
     
     <style>
@@ -43,7 +40,6 @@
             --rojo-alerta: #C0392B; /* Color para Stop/Alertas */
         }
 
-        /* Estilo para el manejador del volumen */
         .volume-slider::-webkit-slider-thumb { 
             appearance: none; 
             width: 16px; 
@@ -62,7 +58,6 @@
             overflow: hidden; 
         }
 
-        /* Animación "Bass" para el logo cuando suena la música */
         @keyframes speaker-beat {
             0% { transform: scale(1); filter: drop-shadow(0 0 0px rgba(244, 208, 63, 0)); }
             50% { transform: scale(1.05); filter: drop-shadow(0 0 15px rgba(244, 208, 63, 0.4)); }
@@ -70,18 +65,15 @@
         }
         .animate-speaker { animation: speaker-beat 2s infinite ease-in-out; }
 
-        /* Animación suave para textos de carga */
         @keyframes pulse-slow {
             0%, 100% { opacity: 0.5; }
             50% { opacity: 1; }
         }
         .animate-pulse-slow { animation: pulse-slow 3s infinite ease-in-out; }
 
-        /* Utilidad para ocultar barras de scroll estéticamente */
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
-        /* Estilo común para tarjetas con efecto cristal (Glassmorphism) */
         .glass-card {
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(10px);
@@ -89,7 +81,6 @@
             border-radius: 0.75rem;
         }
 
-        /* Estilo para la pestaña activa en la navegación inferior */
         .active-tab {
             color: var(--trigo) !important;
             background: rgba(244, 208, 63, 0.1);
@@ -97,21 +88,17 @@
     </style>
 </head>
 <body>
-    <!-- Contenedor principal donde React inyectará la app -->
     <div id="root"></div>
 
     <script type="text/babel">
         const { useState, useEffect, useRef } = React;
         
-        // ========================================================
-        // COMPONENTE: ICON (Gestión de Iconos Lucide y SVGs)
-        // ========================================================
+        // COMPONENTE: ICON
         const Icon = ({ name, size = 20, className = "" }) => {
             useEffect(() => {
                 if (window.lucide) window.lucide.createIcons();
             }, [name, size, className]);
 
-            // SVGs manuales para redes sociales (Lucide no los incluye por defecto)
             const brandIcons = {
                 'facebook': <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>,
                 'instagram': <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>,
@@ -132,9 +119,7 @@
             return <i data-lucide={name} style={{ width: size, height: size }} className={className}></i>;
         };
 
-        // ========================================================
-        // CONFIGURACIÓN: DATOS GENERALES DE LA RADIO
-        // ========================================================
+        // CONFIGURACIÓN RADIO
         const RADIO_CONFIG = {
             name: "Voces Campesinas",
             streamUrl: "https://a1.asurahosting.com/listen/voces_campesinas/radio.mp3",
@@ -147,74 +132,100 @@
             webUrl: "https://www.vocescampesinas.co"
         };
 
-        // ========================================================
-        // BASE DE DATOS: PROGRAMACIÓN SEMANAL
-        // ========================================================
+        // PROGRAMACIÓN COMPLETA
         const SCHEDULE = [
             { start: "00:00", end: "04:59", title: "La Licuadora", host: "Franja Crossover", org: "Voces Campesinas", category: "franja", days: [1,2,3,4,5,6,0] },
-            { start: "05:00", end: "05:59", title: "Alborada Campesina", host: "Música Colombiana", org: "Producción Local", category: "franja", days: [1,2,3,4,5,6,0] },
-            { start: "19:30", end: "20:30", title: "Palabras del Territorio", host: "Walter Sosa", org: "Voces Campesinas", category: "propio", days: [2, 6] },
+            { start: "05:00", end: "06:29", title: "Alborada Campesina", host: "Música Colombiana", org: "Producción Local", category: "franja", days: [1,2,3,4,5,6,0] },
+            { start: "06:30", end: "06:59", title: "Campesinos en Acción", host: "Equipo Comunicaciones", org: "ANUC La Palma", category: "entidad", days: [6, 1] },
+            { start: "07:00", end: "07:59", title: "Perreo Campesino", host: "Música Carranguera", org: "Voces Campesinas", category: "franja", days: [1,2,4,5,0] },
+            { start: "07:30", end: "10:59", title: "Magazín Región Activa", host: "Jotta Ricón", org: "CorpoActúa", category: "entidad", days: [6, 3] },
+            { start: "12:00", end: "14:15", title: "La Parcela Política", host: "Walter Sosa", org: "Voces Campesinas", category: "propio", days: [4, 5] },
+            { start: "13:00", end: "13:59", title: "Perreo Campesino", host: "Música Carranguera", org: "Voces Campesinas", category: "franja", days: [1,2,3,4,5,6,0] },
+            { start: "19:00", end: "19:59", title: "La Parcela Política", host: "Walter Sosa", org: "Voces Campesinas", category: "propio", days: [1] },
+            { start: "19:30", end: "20:29", title: "Palabras del Territorio", host: "Walter Sosa", org: "Voces Campesinas", category: "propio", days: [2, 6] },
+            { start: "19:30", end: "20:30", title: "Renacer Andino", host: "Ramón Olivares", org: "Grupo Cultural", category: "entidad", days: [0, 3] },
             { start: "19:30", end: "22:59", title: "Lo Mejor de Región Activa", host: "Jotta Rincón", org: "CorpoActúa", category: "reemision", days: [1,2,3,4,5] },
             { start: "20:00", end: "20:59", title: "Cosecha de Amor", host: "Dj Rosado", org: "Voces Campesinas", category: "franja", days: [1,2,3,4,5,6,0] },
-            { start: "06:30", end: "06:59", title: "Campesinos en Acción", host: "Equipo Comunicaciones", org: "ANUC La Palma", category: "entidad", days: [6, 1] },
-            { start: "07:30", end: "10:59", title: "Magazín Región Activa", host: "Jotta Ricón", org: "CorpoActúa", category: "entidad", days: [6, 3] }
+            { start: "21:30", end: "23:59", title: "Cuentos y Leyendas", host: "Abuelo Ricardo", org: "Proyecto Memoria", category: "propio", days: [2,3,4,5] }
         ];
 
-        // ========================================================
-        // COMPONENTE PRINCIPAL: APP
-        // ========================================================
+        const DAYS_FULL = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
+
         const App = () => {
-            // -- Estados de la aplicación --
-            const [isSplash, setIsSplash] = useState(true);        // Control de pantalla de carga
-            const [isPlaying, setIsPlaying] = useState(false);     // Control de reproducción
-            const [volume, setVolume] = useState(0.8);             // Control de volumen
-            const [currentView, setCurrentView] = useState('home');// Navegación entre vistas
-            const [currentProgram, setCurrentProgram] = useState(null); // Programa actual al aire
-            const [nextProgram, setNextProgram] = useState(null);       // Siguiente programa
-            const [formType, setFormType] = useState('mensaje');   // Tipo de formulario WhatsApp
+            const [isSplash, setIsSplash] = useState(true);
+            const [isPlaying, setIsPlaying] = useState(false);
+            const [volume, setVolume] = useState(0.8);
+            const [currentView, setCurrentView] = useState('home');
+            const [currentProgram, setCurrentProgram] = useState(null);
+            const [nextProgram, setNextProgram] = useState(null);
+            const [nextDayInfo, setNextDayInfo] = useState("");
+            const [formType, setFormType] = useState('mensaje'); 
             const [requestData, setRequestData] = useState({ nombre: '', cancion: '', interprete: '', mensaje: '' });
-            const [showInstallBtn, setShowInstallBtn] = useState(false); // Botón de instalación PWA
+            const [showInstallBtn, setShowInstallBtn] = useState(false);
             const [deferredPrompt, setDeferredPrompt] = useState(null);
 
             const audioRef = useRef(null);
 
-            // -- Efectos Iniciales --
             useEffect(() => {
-                // Timer para quitar el Splash Screen
                 const timer = setTimeout(() => setIsSplash(false), 3500);
 
-                // Registro de Service Worker para PWA
                 if ('serviceWorker' in navigator) {
                     navigator.serviceWorker.register('sw.js').catch(() => {});
                 }
-
-                // Captura del evento de instalación
                 window.addEventListener('beforeinstallprompt', (e) => {
                     e.preventDefault();
                     setDeferredPrompt(e);
                     setShowInstallBtn(true);
                 });
 
-                // Lógica para determinar qué programa está sonando según la hora
-                const update = () => {
+                const updateTimeLogic = () => {
                     const now = new Date();
                     const cur = now.getHours() * 60 + now.getMinutes();
                     const day = now.getDay();
                     const timeToMin = (t) => { const [h,m] = t.split(':').map(Number); return h*60+m; };
                     
+                    // 1. Programa actual
                     const prog = SCHEDULE.find(p => cur >= timeToMin(p.start) && cur < timeToMin(p.end) && (p.days ? p.days.includes(day) : true));
-                    let up = SCHEDULE.filter(p => p.days ? p.days.includes(day) : true).sort((a,b) => timeToMin(a.start) - timeToMin(b.start)).find(p => timeToMin(p.start) > cur);
-                    if(!up) up = SCHEDULE.filter(p => p.days ? p.days.includes((day+1)%7) : true).sort((a,b) => timeToMin(a.start) - timeToMin(b.start))[0];
-                    
                     setCurrentProgram(prog || null);
-                    setNextProgram(up || null);
+
+                    // 2. Buscar siguiente (Lógica robusta)
+                    let upcoming = null;
+                    let dayOffsetLabel = "";
+
+                    // Revisar resto de hoy
+                    upcoming = SCHEDULE
+                        .filter(p => p.days.includes(day))
+                        .filter(p => timeToMin(p.start) > cur)
+                        .sort((a,b) => timeToMin(a.start) - timeToMin(b.start))[0];
+
+                    // Si no hay más hoy, buscar en los días siguientes (hasta 7 días adelante)
+                    if (!upcoming) {
+                        for (let i = 1; i <= 7; i++) {
+                            const checkDay = (day + i) % 7;
+                            const found = SCHEDULE
+                                .filter(p => p.days.includes(checkDay))
+                                .sort((a,b) => timeToMin(a.start) - timeToMin(b.start))[0];
+                            
+                            if (found) {
+                                upcoming = found;
+                                if (i === 1) dayOffsetLabel = "Mañana";
+                                else dayOffsetLabel = "El " + DAYS_FULL[checkDay];
+                                break;
+                            }
+                        }
+                    } else {
+                        dayOffsetLabel = "Hoy";
+                    }
+
+                    setNextProgram(upcoming || null);
+                    setNextDayInfo(dayOffsetLabel);
                 };
-                update();
-                const interval = setInterval(update, 30000); // Actualiza cada 30 seg
+
+                updateTimeLogic();
+                const interval = setInterval(updateTimeLogic, 30000);
                 return () => { clearInterval(interval); clearTimeout(timer); };
             }, []);
 
-            // -- Manejador de Reproducción --
             const togglePlay = () => {
                 if (!isPlaying) {
                     if(!audioRef.current.src) audioRef.current.src = RADIO_CONFIG.streamUrl;
@@ -225,7 +236,6 @@
                 setIsPlaying(!isPlaying);
             };
 
-            // -- Manejador de WhatsApp --
             const sendWp = (e) => {
                 e.preventDefault();
                 let text = "📻 👋 ¡Hola Voces Campesinas!\n\n";
@@ -238,9 +248,6 @@
                 window.open(`https://api.whatsapp.com/send?phone=${RADIO_CONFIG.whatsapp}&text=${encodeURIComponent(text)}`, '_blank');
             };
 
-            // ========================================================
-            // VISTA: PANTALLA DE CARGA (SPLASH)
-            // ========================================================
             if (isSplash) {
                 return (
                     <div className="fixed inset-0 bg-[#17202A] z-[100] flex flex-col items-center justify-center text-center p-8">
@@ -249,7 +256,7 @@
                             <img src="https://images.unsplash.com/photo-1478737270239-2f02b77fc618?auto=format&fit=crop&q=80&w=600" className="w-full h-full object-cover rounded-full border-4 border-[#F4D03F]/20 shadow-2xl opacity-80" alt="Splash Radio" />
                         </div>
                         <h1 className="text-3xl font-bold text-[#F4D03F] tracking-tighter mb-2 italic uppercase">Voces Campesinas</h1>
-                        <p className="text-white/40 text-[10px] font-bold uppercase tracking-[0.4em] animate-pulse-slow">La Emisora Digital del Campo Colombiano...</p>
+                        <p className="text-white/40 text-[10px] font-bold Capitalize tracking-[0.4em] animate-pulse-slow">La Emisora del Campo Colombiano...</p>
                         <div className="mt-12 w-48 h-1 bg-white/5 rounded-full overflow-hidden">
                             <div className="h-full bg-[#F4D03F] w-1/2 animate-[loading_2s_infinite]"></div>
                         </div>
@@ -258,23 +265,15 @@
                 );
             }
 
-            // ========================================================
-            // ESTRUCTURA PRINCIPAL DE LA APP
-            // ========================================================
             return (
                 <div className="min-h-screen bg-[#17202A] text-white flex flex-col max-w-lg mx-auto shadow-2xl">
-                    {/* Elemento de Audio Invisible */}
                     <audio ref={audioRef} preload="auto" />
                     
-                    {/* Cabecera (Header) */}
-                    <header className="h-16 flex items-center justify-center border-b border-white/5 bg-[#17202A]/80 backdrop-blur-md sticky top-0 z-50">
+                    <header className="h-16 flex items-center justify-center border-b border-white/5 bg-[#17202A]/80 backdrop-blur-md sticky top-0 z-50 px-6">
                         <span className="font-bold text-lg tracking-tighter text-white/90 uppercase">www.<span className="text-[#F4D03F]">Voces Campesinas</span>.co</span>
                     </header>
 
-                    {/* Contenido Dinámico según la Vista Seleccionada */}
                     <main className="flex-1 overflow-y-auto hide-scrollbar">
-                        
-                        {/* --- VISTA: RADIO (HOME) --- */}
                         {currentView === 'home' && (
                             <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-6 pt-4 animate-in fade-in duration-700">
                                 <div className="relative mb-8">
@@ -288,30 +287,42 @@
                                 <div className="mb-8">
                                     <p className="text-[10px] font-bold text-[#F4D03F] uppercase tracking-[0.5em] mb-1 opacity-80">Emisora Digital</p>
                                     <h1 className="text-3xl font-bold leading-tight mb-1">Voces <span className="text-[#F4D03F]">Campesinas</span></h1>
-                                    <p className="text-xs font-medium text-white/30 italic tracking-widest">"El campo nos une"</p>
+                                    <p className="text-xs font-medium text-white/30 italic tracking-widest">"El Campo Nos Une"</p>
                                 </div>
+
                                 {showInstallBtn && (
                                    <button onClick={() => { deferredPrompt.prompt(); setDeferredPrompt(null); }} className="mb-8 glass-card px-6 py-2.5 rounded-xl flex items-center gap-3 text-[9px] font-bold uppercase tracking-widest text-[#F4D03F]"><Icon name="download" size={14} />Instalar App</button>
                                 )}
-                                <div className="w-full max-w-xs glass-card p-4 text-left flex items-start gap-4 shadow-xl border-[#F4D03F]/10">
-                                    <div className="p-2.5 bg-[#F4D03F]/10 rounded-xl"><Icon name="chevron-right" className="text-[#F4D03F]" size={18} /></div>
-                                    <div className="overflow-hidden">
-                                        <p className="text-[9px] font-bold text-[#F4D03F] uppercase tracking-widest mb-0.5 opacity-60">Siguiente programa</p>
-                                        <h3 className="font-bold text-white text-sm truncate">{nextProgram ? nextProgram.title : "Música Variada"}</h3>
-                                        <p className="text-[11px] text-white/40 italic capitalize">{nextProgram ? `${nextProgram.start} con ${nextProgram.host}` : "La Mejor Música De La Tierrita"}</p>
+
+                                {/* WIDGET: SIGUIENTE PROGRAMA (MEJORADO) */}
+                                <div className="w-full max-w-xs p-5 bg-white/5 backdrop-blur-3xl rounded-xl border border-[#F4D03F]/20 shadow-xl text-left flex items-start gap-4 transition-all">
+                                    <div className="p-2.5 bg-[#F4D03F]/10 rounded-xl">
+                                        <Icon name="chevron-right" className="text-[#F4D03F]" size={20} />
+                                    </div>
+                                    <div className="overflow-hidden flex-1">
+                                        <div className="flex justify-between items-center mb-1">
+                                            <p className="text-[9px] font-bold text-[#F4D03F] uppercase tracking-widest opacity-80">A continuación</p>
+                                            <span className="text-[8px] font-black bg-[#F4D03F] text-[#17202A] px-1.5 py-0.5 rounded uppercase">{nextDayInfo}</span>
+                                        </div>
+                                        <h3 className="font-bold text-white text-base truncate leading-tight">
+                                            {nextProgram ? nextProgram.title : "Música de la Tierrita"}
+                                        </h3>
+                                        <p className="text-[11px] text-white/50 italic capitalize mt-1">
+                                            <span className="text-[#F4D03F]/80 font-bold">{nextProgram?.start}</span> {nextProgram?.host ? `con ${nextProgram.host}` : "Franja Musical"}
+                                        </p>
                                     </div>
                                 </div>
                             </div>
                         )}
 
-                        {/* --- VISTA: PROGRAMACIÓN (SCHEDULE) --- */}
+                        {/* VISTA: PROGRAMACIÓN */}
                         {currentView === 'schedule' && (
                             <div className="px-6 pb-64 animate-in fade-in duration-500 overflow-y-auto max-h-screen hide-scrollbar">
                                 <h2 className="text-xl font-bold text-center mb-6 pt-4 text-[#F4D03F]">Programación</h2>
                                 {['propio', 'franja', 'entidad', 'reemision'].map(cat => {
                                     const progs = SCHEDULE.filter(p => p.category === cat);
                                     if(progs.length === 0) return null;
-                                    const labels = { propio: 'Producción Propia', franja: 'Franjas Musicales', entidad: 'Red De Información Territorial', reemision: 'Reemisiones' };
+                                    const labels = { propio: 'Producción local', franja: 'Franjas musicales', entidad: 'Convenios', reemision: 'Reemisiones' };
                                     const todayNum = new Date().getDay();
 
                                     return (
@@ -334,13 +345,13 @@
                                                                     })}
                                                                 </div>
                                                             </div>
-                                                            {currentProgram?.title === p.title && (
+                                                            {currentProgram?.title === p.title && currentProgram?.start === p.start && (
                                                                 <div className="bg-[#F4D03F] text-black px-2 py-0.5 rounded text-[8px] font-bold animate-pulse uppercase">Al Aire</div>
                                                             )}
                                                         </div>
                                                         <div className="font-bold text-base text-white/95 leading-tight mb-1">{p.title}</div>
                                                         <div className="text-white/40 text-[10px] italic flex items-center gap-1.5 flex-wrap">
-                                                            <span> {p.host}</span>
+                                                            <span>con {p.host}</span>
                                                             {p.org && <span className="text-[#F4D03F]/60 font-bold uppercase not-italic">• {p.org}</span>}
                                                         </div>
                                                     </div>
@@ -352,7 +363,7 @@
                             </div>
                         )}
 
-                        {/* --- VISTA: REDES SOCIALES (SOCIAL) --- */}
+                        {/* VISTA: REDES */}
                         {currentView === 'social' && (
                             <div className="px-6 pb-64 animate-in fade-in max-w-md mx-auto">
                                 <h2 className="text-xl font-bold text-center mb-1 pt-4 text-[#F4D03F]">Conéctate</h2>
@@ -374,7 +385,7 @@
                             </div>
                         )}
 
-                        {/* --- VISTA: PEDIDOS WHATSAPP (WHATSAPP) --- */}
+                        {/* VISTA: WHATSAPP */}
                         {currentView === 'whatsapp' && (
                             <div className="px-6 pb-64 animate-in slide-in-from-bottom-6 max-w-md mx-auto">
                                 <h2 className="text-xl font-bold text-center mb-1 pt-4 text-[#F4D03F]">Escríbenos</h2>
@@ -383,7 +394,7 @@
                                     <button onClick={() => setFormType('mensaje')} className={`flex-1 py-2.5 rounded-lg text-[10px] font-bold uppercase transition-all ${formType === 'mensaje' ? 'bg-[#F4D03F] text-black shadow-lg' : 'text-white/30'}`}>Mensaje</button>
                                     <button onClick={() => setFormType('cancion')} className={`flex-1 py-2.5 rounded-lg text-[10px] font-bold uppercase transition-all ${formType === 'cancion' ? 'bg-[#F4D03F] text-black shadow-lg' : 'text-white/30'}`}>Canción</button>
                                 </div>
-                                <form onSubmit={sendWp} className="space-y-4">
+                                <form onSubmit={sendWp} className="space-y-3">
                                     <input required placeholder="¿Cómo te llamas?" className="w-full glass-card p-4 rounded-xl text-sm outline-none focus:border-[#F4D03F]/50 text-white" onChange={e => setRequestData({...requestData, nombre: e.target.value})} />
                                     {formType === 'cancion' && (
                                         <div className="grid grid-cols-2 gap-3">
@@ -398,11 +409,9 @@
                         )}
                     </main>
 
-                    {/* ========================================================
-                        SECCIÓN: BARRA DE REPRODUCCIÓN (PLAYER)
-                        ======================================================== */}
+                    {/* SECCIÓN: PLAYER */}
                     <div className="fixed bottom-0 w-full max-w-lg z-50 px-4 pb-6 pt-10 pointer-events-none">
-                        <div className="pointer-events-auto bg-[#1a2533]/95 backdrop-blur-3xl rounded-xl border border-white/10 p-4 shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
+                        <div className="pointer-events-auto bg-[#0d131a] backdrop-blur-3xl rounded-xl border border-[#F4D03F]/30 p-4 shadow-[0_-15px_40px_rgba(0,0,0,0.8)] ring-1 ring-white/5">
                             <div className="flex items-center justify-between gap-4 mb-4">
                                 <div className="flex-1 min-w-0">
                                     <div className="flex items-center gap-1.5 mb-1">
@@ -412,13 +421,10 @@
                                     <div className="text-sm font-bold truncate text-white/95">{currentProgram?.title || "La Mejor Música de la Tierrita"}</div>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    {/* Botón Stop (Cierra conexión) */}
                                     <button onClick={() => {audioRef.current.pause(); audioRef.current.src=""; setIsPlaying(false);}} className="w-10 h-10 bg-white/5 rounded-xl flex items-center justify-center transition-colors shadow-inner"><Icon name="square" size={16} className="text-[#C0392B]" /></button>
-                                    {/* Botón Play/Pause */}
                                     <button onClick={togglePlay} className="w-12 h-12 bg-[#F4D03F] text-black rounded-xl flex items-center justify-center shadow-lg active:scale-90 transition-all">{isPlaying ? <Icon name="pause" size={24} /> : <Icon name="play" size={24} className="ml-1" />}</button>
                                 </div>
                             </div>
-                            {/* Control de Volumen */}
                             <div className="flex items-center gap-3 px-1">
                                 <Icon name={volume == 0 ? "volume-x" : "volume-2"} size={14} className="text-[#F4D03F]/50" />
                                 <input type="range" min="0" max="1" step="0.01" value={volume} onChange={e => {setVolume(e.target.value); audioRef.current.volume = e.target.value;}} className="flex-1 h-1 bg-white/10 rounded-full appearance-none volume-slider" />
@@ -426,7 +432,6 @@
                             </div>
                         </div>
 
-                        {/* Barra de Navegación Inferior (Tabs) */}
                         <nav className="pointer-events-auto bg-[#17202A] border border-white/5 mt-3 px-1.5 py-2 flex justify-around rounded-xl shadow-xl">
                             {[
                                 { id: 'home', l: 'Radio', i: 'radio' },
@@ -445,7 +450,6 @@
             );
         };
 
-        // Renderizado inicial de la aplicación
         const root = ReactDOM.createRoot(document.getElementById('root'));
         root.render(<App />);
     </script>
