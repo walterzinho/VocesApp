@@ -1,5 +1,5 @@
 // Service Worker minimalista para habilitar la instalación PWA
-const CACHE_NAME = 'vocesApp-v1';
+const CACHE_NAME = 'vocesApp-v0.9';
 const ASSETS = [
   './',
   './index.html',
