@@ -148,13 +148,13 @@
             { start: "06:30", end: "06:59", title: "Campesinos en Acción", host: "Equipo Comunicaciones", org: "ANUC La Palma", category: "entidad", days: [6, 1] },
             { start: "07:00", end: "07:59", title: "Perreo Campesino", host: "Música Carranguera", org: "Voces Campesinas", category: "franja", days: [1,2,4,5,0] },
             { start: "21:00", end: "21:59", title: "Perreo Campesino", host: "Música Carranguera", org: "Voces Campesinas", category: "franja", days: [1,2,3,4,6,0] },
-	        { start: "07:30", end: "10:59", title: "Magazín Región Activa", host: "Jotta Ricón", org: "CorpoActúa", category: "entidad", days: [6, 3] },
+	        { start: "07:30", end: "10:59", title: "Magazín Región Activa", host: "Jotta Ricón - Walter Sosa", org: "CorpoActúa", category: "entidad", days: [6, 3] },
             { start: "12:00", end: "14:15", title: "La Parcela Política", host: "Walter Sosa", org: "Voces Campesinas", category: "propio", days: [4, 5] },
             { start: "13:00", end: "13:59", title: "Perreo Campesino", host: "Música Carranguera", org: "Voces Campesinas", category: "franja", days: [1,2,3,4,5,6,0] },
             { start: "19:00", end: "19:59", title: "La Parcela Política", host: "Walter Sosa", org: "Voces Campesinas", category: "propio", days: [1] },
             { start: "19:30", end: "20:29", title: "Palabras del Territorio", host: "Walter Sosa", org: "Voces Campesinas", category: "propio", days: [2, 6] },
-            { start: "19:30", end: "20:30", title: "Renacer Andino", host: "Ramón Olivares", org: "Grupo Cultural", category: "entidad", days: [0, 3] },
-            { start: "19:30", end: "22:59", title: "Lo Mejor de Región Activa", host: "Jotta Rincón", org: "CorpoActúa", category: "reemision", days: [5] },
+            { start: "19:30", end: "20:30", title: "Renacer Andino", host: "Ramón Olivares", org: "Grupo Cultural de Antofagasta", category: "entidad", days: [0, 3] },
+            { start: "19:30", end: "22:59", title: "Lo Mejor de Región Activa", host: "Jotta Rincón", org: "CorpoActúa", category: "reemision", days: [1,2,3,4,5] },
             { start: "20:00", end: "20:59", title: "Cosecha de Amor", host: "Dj Rosado", org: "Voces Campesinas", category: "franja", days: [1,2,3,4,6,0] },
 
         ];
@@ -171,7 +171,7 @@
             const [nextProgram, setNextProgram] = useState(null);
             const [nextDayInfo, setNextDayInfo] = useState("");
             const [formType, setFormType] = useState('mensaje'); 
-            const [requestData, setRequestData] = useState({ nombre: '', cancion: '', interprete: '', mensaje: '' });
+            const [requestData, setRequestData] = useState({ nombre: '', canción: '', interprete: '', mensaje: '' });
             const [showInstallBtn, setShowInstallBtn] = useState(false);
             const [deferredPrompt, setDeferredPrompt] = useState(null);
 
@@ -250,7 +250,7 @@
                 e.preventDefault();
                 let text = "📻 👋 ¡Hola Voces Campesinas!\n\n";
                 if(formType === 'cancion') {
-                    text += "🎵 *PEDIDO MUSICAL*\n👤 *Nombre:* " + requestData.nombre + "\n💿 *Canción:* " + requestData.cancion + "\n🎤 *Artista:* " + requestData.interprete + "\n";
+                    text += "🎵 *PEDIDO MUSICAL* \n👤 *Nombre:* " + requestData.nombre + "\n💿 *Canción:* " + requestData.cancion + "\n🎤 *Artista:* " + requestData.interprete + "\n";
                 } else {
                     text += "💬 *MENSAJE*\n👤 *De:* " + requestData.nombre + "\n";
                 }
@@ -315,7 +315,7 @@
                                     <div className="p-3 bg-[#F4D03F]/10 rounded-lg shrink-0"><Icon name="chevron-right" className="text-[#F4D03F]" size={20} /></div>
                                     <div className="overflow-hidden flex-1">
                                         <div className="flex justify-between items-center gap-2 mb-1">
-                                            <p className="text-[9px] font-bold text-[#F4D03F]/70 uppercase tracking-widest">A continuación</p>
+                                            <p className="text-[9px] font-bold text-[#F4D03F]/70 uppercase tracking-widest">A Continuación</p>
                                             <span className="text-[8px] font-black bg-[#F4D03F] text-[#17202A] px-1.5 py-0.5 rounded uppercase whitespace-nowrap">{nextDayInfo}</span>
                                         </div>
                                         <h3 className="font-bold text-white text-[15px] truncate">{nextProgram ? nextProgram.title : "Música de la Tierrita"}</h3>
@@ -332,11 +332,11 @@
                                 {['propio', 'franja', 'entidad', 'reemision'].map(cat => {
                                     const progs = SCHEDULE.filter(p => p.category === cat);
                                     if(progs.length === 0) return null;
-                                    const labels = { propio: 'Producción local', franja: 'Franjas musicales', entidad: 'Convenios', reemision: 'Reemisiones' };
+                                    const labels = { propio: 'Producción Propia', franja: 'Franjas Musicales', entidad: 'Red De Información Territorial - RIT', reemision: 'Reemisiones' };
                                     const todayNum = new Date().getDay();
                                     return (
                                         <div key={cat} className="mb-8">
-                                            <div className="flex items-center gap-2 mb-3 opacity-50"><Icon name="calendar" size={14}/><span className="text-[10px] font-bold uppercase tracking-widest">{labels[cat]}</span></div>
+                                            <div className="flex items-center gap-2 mb-3 #F4D03F opacity-70"><Icon name="calendar" size={14}/><span className="text-[14px] font-bold Capitalize tracking-widest">{labels[cat]}</span></div>
                                             <div className="space-y-3">
                                                 {progs.map((p, i) => (
                                                     <div key={i} className="glass-card p-4">
