@@ -126,32 +126,35 @@
     <script type="text/babel">
         const { useState, useEffect, useRef } = React;
         
+        // COMPONENTE: ICON (CONTROLADO PARA EVITAR CONFLICTOS DE DOM)
         const Icon = ({ name, size = 20, className = "" }) => {
-            useEffect(() => {
-                if (window.lucide) window.lucide.createIcons();
-            }, [name, size, className]);
-
+            const iconRef = useRef(null);
+            
             const brandIcons = {
                 'facebook': <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>,
-                'instagram': <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>,
-                'youtube': <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.33 29 29 0 0 0-.46-5.33z"></path>,
+                'instagram': <g><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></g>,
+                'youtube': <g><path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.33 29 29 0 0 0-.46-5.33z"></path><polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon></g>,
                 'tiktok': <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"></path>,
-                'globe': <circle cx="12" cy="12" r="10"></circle>
+                'globe': <g><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></g>
             };
+
+            useEffect(() => {
+                if (window.lucide && iconRef.current && !brandIcons[name]) {
+                    window.lucide.createIcons({
+                        attrs: { width: size, height: size, class: className },
+                        nameAttr: 'data-lucide'
+                    });
+                }
+            }, [name, size, className]);
 
             if (brandIcons[name]) {
                 return (
                     <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
                         {brandIcons[name]}
-                        {name === 'instagram' && <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>}
-                        {name === 'instagram' && <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>}
-                        {name === 'youtube' && <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon>}
-                        {name === 'globe' && <line x1="2" y1="12" x2="22" y2="12"></line>}
-                        {name === 'globe' && <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>}
                     </svg>
                 );
             }
-            return <i data-lucide={name} style={{ width: size, height: size }} className={className}></i>;
+            return <div key={name} className="inline-block leading-none"><i ref={iconRef} data-lucide={name} style={{ width: size, height: size }}></i></div>;
         };
 
         const RADIO_CONFIG = {
@@ -163,7 +166,7 @@
             youtubeUrl: "https://www.youtube.com/@VocesCampesinasCo",
             webUrl: "https://www.vocescampesinas.co",
             email: "emisora@vocescampesinas.co",
-            bloggerUrl: "https://vocescampesinas.blogspot.com/feeds/posts/default?alt=json&max-results=10"
+            bloggerFeed: "https://vocescampesinas.blogspot.com/feeds/posts/default?alt=json&max-results=12"
         };
 
         const SCHEDULE = [
@@ -182,6 +185,7 @@
             { start: "21:30", end: "23:59", title: "Cuentos y Leyendas", host: "Abuelo Ricardo", org: "Proyecto Memoria", category: "propio", days: [2,3,4,5], image: "cuentos-leyendas.jpg" }
         ];
 
+        const DAYS_SHORT = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
         const DAYS_FULL = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
 
         const App = () => {
@@ -202,10 +206,10 @@
             const audioRef = useRef(null);
 
             useEffect(() => {
-                const timer = setTimeout(() => setIsSplash(false), 4000);
+                const splashTimer = setTimeout(() => setIsSplash(false), 4500);
 
-                if ('serviceWorker' in navigator) {
-                    navigator.serviceWorker.register('sw.js').catch(e => console.log(e));
+                if ('serviceWorker' in navigator && (window.location.protocol === 'https:' || window.location.hostname === 'localhost')) {
+                    navigator.serviceWorker.register('./sw.js').catch(e => console.warn('SW:', e.message));
                 }
 
                 window.addEventListener('beforeinstallprompt', (e) => {
@@ -244,40 +248,60 @@
 
                 updateTimeLogic();
                 const interval = setInterval(updateTimeLogic, 30000);
-                return () => { clearInterval(interval); clearTimeout(timer); };
+                return () => { clearInterval(interval); clearTimeout(splashTimer); };
             }, []);
+
+            const fetchNews = async () => {
+                setLoadingNews(true);
+                const target = RADIO_CONFIG.bloggerFeed;
+                const proxies = [
+                    `https://api.allorigins.win/get?url=${encodeURIComponent(target + '&t=' + Date.now())}`,
+                    `https://corsproxy.io/?${encodeURIComponent(target)}`
+                ];
+
+                const processData = (json) => {
+                    try {
+                        const entries = json.feed?.entry || [];
+                        const formatted = entries.map(e => {
+                            const link = e.link.find(l => l.rel === 'alternate')?.href || RADIO_CONFIG.webUrl;
+                            let img = "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&q=80&w=400";
+                            if (e.media$thumbnail) img = e.media$thumbnail.url.replace('/s72-c/', '/s640/');
+                            return {
+                                title: e.title.$t,
+                                link: link,
+                                date: new Date(e.published.$t).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }),
+                                thumbnail: img,
+                                summary: e.summary?.$t ? e.summary.$t.replace(/<[^>]*>?/gm, '').substring(0, 110).trim() + '...' : 'Toca para leer más.'
+                            };
+                        });
+                        setNews(formatted);
+                        setLoadingNews(false);
+                    } catch (err) {
+                        console.error("Error procesando noticias:", err);
+                        setLoadingNews(false);
+                    }
+                };
+
+                for (const url of proxies) {
+                    try {
+                        const res = await fetch(url);
+                        if (!res.ok) continue;
+                        const raw = await res.json();
+                        const data = (typeof raw.contents === 'string') ? JSON.parse(raw.contents) : raw;
+                        if (data && data.feed) {
+                            processData(data);
+                            return;
+                        }
+                    } catch (e) { console.warn("Proxy falló..."); }
+                }
+                setLoadingNews(false);
+            };
 
             useEffect(() => {
                 if (currentView === 'news' && news.length === 0) {
-                    setLoadingNews(true);
-                    const targetUrl = RADIO_CONFIG.bloggerUrl;
-                    const p1 = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl + '&t=' + Date.now())}`;
-                    
-                    fetch(p1)
-                        .then(r => r.json())
-                        .then(d => {
-                            const data = JSON.parse(d.contents);
-                            const items = (data.feed.entry || []).map(e => {
-                                const l = e.link.find(link => link.rel === 'alternate').href;
-                                let img = "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&q=80&w=400";
-                                if (e.media$thumbnail) img = e.media$thumbnail.url.replace('s72-c', 's400');
-                                return {
-                                    title: e.title.$t,
-                                    link: l,
-                                    date: new Date(e.published.$t).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }),
-                                    thumbnail: img,
-                                    summary: e.summary ? e.summary.$t.replace(/<[^>]*>?/gm, '').substring(0, 90).trim() + '...' : 'Toca para leer más.'
-                                };
-                            });
-                            setNews(items);
-                            setLoadingNews(false);
-                        })
-                        .catch(() => {
-                            setLoadingNews(false);
-                            setNews([]);
-                        });
+                    fetchNews();
                 }
-            }, [currentView, news.length]);
+            }, [currentView]);
 
             const handleInstall = async () => {
                 if (!deferredPrompt) return;
@@ -287,12 +311,24 @@
                 setDeferredPrompt(null);
             };
 
-            const togglePlay = () => {
+            // CORRECCIÓN: togglePlay con manejo de promesas para evitar AbortError
+            const togglePlay = async () => {
+                if (!audioRef.current) return;
+                
                 if (!isPlaying) {
                     if(!audioRef.current.src) audioRef.current.src = RADIO_CONFIG.streamUrl;
-                    audioRef.current.play();
-                } else { audioRef.current.pause(); }
-                setIsPlaying(!isPlaying);
+                    try {
+                        // El método play() es asíncrono y devuelve una promesa
+                        await audioRef.current.play();
+                        setIsPlaying(true);
+                    } catch (err) {
+                        // Capturamos el error si el usuario interrumpe la carga rápidamente
+                        console.warn("Reproducción interrumpida o fallida:", err.message);
+                    }
+                } else {
+                    audioRef.current.pause();
+                    setIsPlaying(false);
+                }
             };
 
             const sendWp = (e) => {
@@ -309,12 +345,13 @@
                         </div>
                         <div className="text-center space-y-2">
                             <p className="text-[#F4D03F] text-[10px] font-black uppercase tracking-[0.5em]">Emisora Digital</p>
-                            <h1 className="text-4xl font-black tracking-tighter italic">Voces Campesinas</h1>
-                            <p className="text-white/40 text-xs font-bold tracking-[0.2em] italic">"El Campo Nos Une"</p>
+                            <h1 className="text-4xl font-black tracking-tighter italic leading-none">Voces Campesinas</h1>
+                            <p className="text-white/40 text-xs font-bold tracking-[0.2em] italic leading-tight">"El Campo Nos Une"</p>
                         </div>
                         <div className="mt-12 w-32 h-0.5 bg-white/5 rounded-full overflow-hidden">
                             <div className="h-full bg-[#F4D03F] w-1/3 animate-loading"></div>
                         </div>
+                        {/* CRÉDITOS EN SPLASH (CON FORMATO CAPITALIZADO Y NEGRILA) */}
                         <div className="absolute bottom-10 text-center opacity-40 text-[11px] font-medium tracking-tight space-y-1.5 px-4">
                             <p>Un Proyecto Desarrollado</p>
                             <p>Con Inteligencia Emocional - EI</p>
@@ -340,8 +377,8 @@
                                 <div className="flex items-center gap-3 flex-1 min-w-0">
                                     <div className={`w-3 h-3 rounded-full ${isPlaying ? 'bg-[#6cd14f] animate-pulse' : 'bg-white/10'}`}></div>
                                     <div className="min-w-0">
-                                        <p className="text-[13px] font-bold text-white/95 truncate">Estás escuchando la emisora</p>
-                                        <p className="text-[11px] font-black text-[#F4D03F] tracking-tighter opacity-90">www.VocesCampesinas.co</p>
+                                        <p className="text-[13px] font-bold text-white/95 truncate leading-tight">Estás escuchando la emisora</p>
+                                        <p className="text-[11px] font-black text-[#F4D03F] tracking-tighter opacity-90 leading-none mt-0.5">www.VocesCampesinas.co</p>
                                     </div>
                                 </div>
                                 <div className="flex items-center gap-2">
@@ -351,7 +388,7 @@
                             </div>
                             <div className="flex items-center gap-3 mt-3 px-1">
                                 <Icon name={volume == 0 ? "volume-x" : "volume-2"} size={14} className="text-[#F4D03F]/30" />
-                                <input type="range" min="0" max="1" step="0.01" value={volume} onChange={e => {setVolume(e.target.value); audioRef.current.volume = e.target.value;}} className="flex-1 h-1 bg-white/10 rounded-full appearance-none volume-slider" />
+                                <input type="range" min="0" max="1" step="0.01" value={volume} onChange={e => {setVolume(e.target.value); audioRef.current.volume = e.target.value;}} className="flex-1 h-1 bg-white/10 rounded-full appearance-none volume-slider cursor-pointer" />
                                 <span className="text-[9px] font-bold text-white/20 w-7 text-right">{Math.round(volume*100)}%</span>
                             </div>
                         </div>
@@ -359,15 +396,15 @@
 
                     <main className="flex-1 overflow-y-auto hide-scrollbar pt-[108px] pb-32">
                         {currentView === 'home' && (
-                            <div className="animate-in fade-in duration-700">
+                            <div key="home-view" className="animate-in fade-in duration-700">
                                 <div className="live-card" style={{ backgroundImage: `url(${currentProgram?.image || 'general-musica.jpg'})` }}>
                                     <div className="absolute inset-0 z-10 p-4 flex flex-col justify-end">
                                         <div className="flex items-center gap-2 mb-1">
                                             <span className="bg-red-600 text-white text-[8px] font-black px-1.5 py-0.5 rounded-full animate-pulse uppercase tracking-widest">En Vivo</span>
                                             <span className="text-white/60 text-[9px] font-bold tracking-tighter">Transmitiendo:</span>
                                         </div>
-                                        <h2 className="text-xl font-black text-white truncate">{currentProgram?.title || "Música de la Tierrita"}</h2>
-                                        <p className="text-[#F4D03F] text-[10px] font-bold italic opacity-90 truncate">{currentProgram ? `con ${currentProgram.host}` : "Lo mejor del campo colombiano"}</p>
+                                        <h2 className="text-xl font-black text-white truncate drop-shadow-lg">{currentProgram?.title || "Música de la Tierrita"}</h2>
+                                        <p className="text-[#F4D03F] text-[10px] font-bold italic opacity-90 truncate drop-shadow-md">{currentProgram ? `con ${currentProgram.host}` : "Lo mejor del campo colombiano"}</p>
                                     </div>
                                 </div>
 
@@ -396,12 +433,12 @@
                                         <input required placeholder="¿Cómo te llamas?" className="w-full glass-card p-3.5 rounded-xl text-xs outline-none focus:border-[#F4D03F]/50 text-white" onChange={e => setRequestData({...requestData, nombre: e.target.value})} />
                                         {formType === 'cancion' && (
                                             <div className="grid grid-cols-2 gap-2.5">
-                                                <input required placeholder="Canción" className="w-full glass-card p-3.5 rounded-xl text-xs outline-none text-white" onChange={e => setRequestData({...requestData, cancion: e.target.value})} />
-                                                <input required placeholder="Artista" className="w-full glass-card p-3.5 rounded-xl text-xs outline-none text-white" onChange={e => setRequestData({...requestData, interprete: e.target.value})} />
+                                                <input required placeholder="Canción" className="w-full glass-card p-3.5 rounded-xl text-xs outline-none focus:border-[#F4D03F]/50 text-white" onChange={e => setRequestData({...requestData, cancion: e.target.value})} />
+                                                <input required placeholder="Artista" className="w-full glass-card p-3.5 rounded-xl text-xs outline-none focus:border-[#F4D03F]/50 text-white" onChange={e => setRequestData({...requestData, interprete: e.target.value})} />
                                             </div>
                                         )}
-                                        <textarea required placeholder="Escribe aquí..." rows="3" className="w-full glass-card p-3.5 rounded-xl text-xs outline-none resize-none text-white" onChange={e => setRequestData({...requestData, mensaje: e.target.value})}></textarea>
-                                        <button className="w-full bg-[#F4D03F] text-black py-3.5 rounded-xl font-bold text-xs shadow-xl active:scale-95 transition-all flex items-center justify-center gap-2">
+                                        <textarea required placeholder="Escribe aquí..." rows="3" className="w-full glass-card p-3.5 rounded-xl text-xs outline-none focus:border-[#F4D03F]/50 resize-none text-white" onChange={e => setRequestData({...requestData, mensaje: e.target.value})}></textarea>
+                                        <button className="w-full bg-[#F4D03F] text-black py-3.5 rounded-xl font-bold text-xs shadow-xl hover:bg-white active:scale-95 transition-all flex items-center justify-center gap-2 mb-4">
                                             <Icon name="message-circle" size={16} /> Enviar a WhatsApp
                                         </button>
                                         <div className="pt-4 mt-2 border-t border-white/5 flex flex-col items-center gap-2.5 text-[10px] text-white/40 font-bold uppercase tracking-widest">
@@ -414,23 +451,37 @@
                         )}
 
                         {currentView === 'schedule' && (
-                            <div className="px-6 animate-in fade-in duration-500 min-h-screen">
+                            <div key="schedule-view" className="px-6 pb-64 animate-in fade-in duration-500 overflow-y-auto min-h-screen">
                                 <h2 className="text-xl font-bold text-center mb-6 pt-4 text-[#F4D03F]">Programación</h2>
                                 {['propio', 'franja', 'entidad', 'reemision'].map(cat => {
                                     const progs = SCHEDULE.filter(p => p.category === cat);
                                     if(progs.length === 0) return null;
                                     const labels = { propio: 'Producción Local', franja: 'Franjas Musicales', entidad: 'Información Territorial', reemision: 'Reemisiones' };
+                                    const todayIdx = new Date().getDay();
                                     return (
                                         <div key={cat} className="mb-8">
                                             <div className="flex items-center gap-2 mb-3 opacity-50"><Icon name="calendar" size={14}/><span className="text-[10px] font-bold tracking-widest uppercase">{labels[cat]}</span></div>
                                             <div className="space-y-3">
                                                 {progs.map((p, i) => (
-                                                    <div key={i} className="glass-card p-4">
+                                                    <div key={`prog-${cat}-${i}`} className="glass-card p-4">
                                                         <div className="flex justify-between items-center mb-1">
-                                                            <span className="text-[#F4D03F] text-[11px] font-bold">{p.start} - {p.end}</span>
-                                                            {currentProgram?.title === p.title && <div className="bg-[#F4D03F] text-black px-2 py-0.5 rounded text-[8px] font-bold">Al Aire</div>}
+                                                            <div className="flex items-center gap-3">
+                                                                <span className="text-[#F4D03F] text-[11px] font-bold">{p.start} - {p.end}</span>
+                                                                <div className="flex gap-1">
+                                                                    {[0,1,2,3,4,5,6].map(dIdx => {
+                                                                        if (!p.days.includes(dIdx)) return null;
+                                                                        const isToday = dIdx === todayIdx;
+                                                                        return (
+                                                                            <span key={`day-${dIdx}`} className={`text-[7px] px-1.5 py-0.5 rounded font-black transition-all ${isToday ? 'bg-[#F4D03F] text-[#17202A] scale-110 ring-1 ring-[#F4D03F]/50 shadow-lg' : 'bg-white/5 text-white/20'}`}>
+                                                                                {DAYS_SHORT[dIdx]}
+                                                                            </span>
+                                                                        );
+                                                                    })}
+                                                                </div>
+                                                            </div>
+                                                            {currentProgram?.title === p.title && currentProgram?.start === p.start && <div className="bg-[#F4D03F] text-black px-2 py-0.5 rounded text-[8px] font-bold animate-pulse">Al Aire</div>}
                                                         </div>
-                                                        <div className="font-bold text-base">{p.title}</div>
+                                                        <div className="font-bold text-base mt-1">{p.title}</div>
                                                         <div className="text-white/40 text-[10px] italic"><span>con {p.host}</span></div>
                                                     </div>
                                                 ))}
@@ -442,29 +493,42 @@
                         )}
 
                         {currentView === 'news' && (
-                            <div className="px-4 pb-64 animate-in fade-in duration-500 min-h-screen">
+                            <div key="news-view" className="px-4 pb-64 animate-in fade-in duration-500 min-h-screen">
                                 <h2 className="text-xl font-bold text-center mb-6 pt-4 text-[#F4D03F]">Últimas Noticias</h2>
                                 {loadingNews ? (
-                                    <div className="flex flex-col items-center justify-center py-20 text-white/40 text-xs font-bold uppercase animate-pulse tracking-widest">Cargando noticias...</div>
+                                    <div className="flex flex-col items-center justify-center py-24">
+                                        <div className="w-10 h-10 border-4 border-white/5 border-t-[#F4D03F] rounded-full animate-spin mb-6"></div>
+                                        <p className="text-[10px] font-black text-white/30 uppercase tracking-[0.3em] animate-pulse">Consultando el Blog...</p>
+                                    </div>
                                 ) : (
                                     <div className="space-y-4">
                                         {news.length > 0 ? news.map((item, idx) => (
-                                            <div key={idx} onClick={() => window.open(item.link, '_blank')} className="glass-card flex gap-4 p-3 hover:bg-white/5 transition-all cursor-pointer">
-                                                <div className="shrink-0 w-[90px] h-[90px] rounded-lg overflow-hidden"><img src={item.thumbnail} className="w-full h-full object-cover" /></div>
-                                                <div className="flex-1 min-w-0">
-                                                    <span className="text-[8px] font-black bg-[#F4D03F] text-[#17202A] px-1.5 py-0.5 rounded mb-1 inline-block">{item.date}</span>
-                                                    <h3 className="font-bold text-[13px] leading-tight mb-1">{item.title}</h3>
+                                            <div key={`news-${idx}`} onClick={() => window.open(item.link, '_blank')} className="glass-card flex gap-4 p-3 hover:bg-white/5 transition-all cursor-pointer border-white/5">
+                                                <div className="shrink-0 w-[90px] h-[90px] rounded-lg overflow-hidden bg-black/40 border border-white/5">
+                                                    <img src={item.thumbnail} alt="Img" className="w-full h-full object-cover" onError={(e) => e.target.src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&q=80&w=300"} />
+                                                </div>
+                                                <div className="flex-1 min-w-0 flex flex-col justify-between py-0.5">
+                                                    <div>
+                                                        <span className="text-[8px] font-black bg-[#F4D03F] text-[#17202A] px-1.5 py-0.5 rounded mb-1.5 inline-block">{item.date}</span>
+                                                        <h3 className="font-bold text-[13px] leading-tight mb-1 line-clamp-2">{item.title}</h3>
+                                                    </div>
                                                     <p className="text-[10px] text-white/40 italic line-clamp-2">{item.summary}</p>
                                                 </div>
                                             </div>
-                                        )) : <div className="text-center py-20 text-white/20 font-black uppercase">No hay noticias hoy</div>}
+                                        )) : (
+                                            <div className="text-center py-20 px-6">
+                                                <Icon name="newspaper" size={40} className="mx-auto text-white/10 mb-4" />
+                                                <p className="text-sm font-bold text-white/40 mb-6 uppercase tracking-widest font-black">No se pudo conectar con el Blog</p>
+                                                <button onClick={fetchNews} className="bg-white/5 border border-white/10 px-6 py-3 rounded-xl text-xs font-black uppercase hover:bg-white/10 transition-all">Reintentar Carga</button>
+                                            </div>
+                                        )}
                                     </div>
                                 )}
                             </div>
                         )}
 
                         {currentView === 'social' && (
-                            <div className="px-6 animate-in fade-in text-center max-w-md mx-auto">
+                            <div key="social-view" className="px-6 animate-in fade-in text-center max-w-md mx-auto">
                                 <h2 className="text-xl font-bold mb-1 pt-4 text-[#F4D03F]">Conéctate</h2>
                                 <p className="text-white/40 text-[10px] font-bold tracking-widest mb-10 italic">#ElCampoNosUne</p>
                                 <div className="grid grid-cols-1 gap-4">
