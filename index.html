@@ -6,7 +6,7 @@
          ======================================================== -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Emisora Digital Voces Camesinas</title>
+    <title>Voces Campesinas Radio</title>
     
     <!-- ========================================================
          SECCIÓN 2: ICONOS Y FAVICON
@@ -61,11 +61,17 @@
         }
 
         @keyframes speaker-beat {
-            0% { transform: scale(1); filter: drop-shadow(0 0 0px rgba(244, 208, 63, 0)); }
-            50% { transform: scale(1.02); filter: drop-shadow(0 0 10px rgba(244, 208, 63, 0.2)); }
-            100% { transform: scale(1); filter: drop-shadow(0 0 0px rgba(244, 208, 63, 0)); }
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
         }
         .animate-speaker { animation: speaker-beat 2s infinite ease-in-out; }
+
+        @keyframes loading-bar {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(300%); }
+        }
+        .animate-loading { animation: loading-bar 2s infinite linear; }
 
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -82,7 +88,6 @@
             background: rgba(244, 208, 63, 0.1);
         }
 
-        /* Estilo para la tarjeta de programa en vivo */
         .live-card {
             position: relative;
             width: 100%;
@@ -100,7 +105,6 @@
             background: linear-gradient(to top, rgba(10, 14, 19, 0.95) 5%, rgba(10, 14, 19, 0.2) 100%);
         }
 
-        /* Estilo para la franja de "A continuación" compacta */
         .next-band {
             width: 100%;
             background: rgba(255, 255, 255, 0.03);
@@ -109,7 +113,6 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        /* Animación para el botón de instalación */
         @keyframes slideUp {
             from { transform: translateY(100px); opacity: 0; }
             to { transform: translateY(0); opacity: 1; }
@@ -123,7 +126,6 @@
     <script type="text/babel">
         const { useState, useEffect, useRef } = React;
         
-        // COMPONENTE: ICON
         const Icon = ({ name, size = 20, className = "" }) => {
             useEffect(() => {
                 if (window.lucide) window.lucide.createIcons();
@@ -133,7 +135,8 @@
                 'facebook': <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>,
                 'instagram': <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>,
                 'youtube': <path d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.33 29 29 0 0 0-.46-5.33z"></path>,
-                'tiktok': <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"></path>
+                'tiktok': <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5"></path>,
+                'globe': <circle cx="12" cy="12" r="10"></circle>
             };
 
             if (brandIcons[name]) {
@@ -143,13 +146,14 @@
                         {name === 'instagram' && <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>}
                         {name === 'instagram' && <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>}
                         {name === 'youtube' && <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02"></polygon>}
+                        {name === 'globe' && <line x1="2" y1="12" x2="22" y2="12"></line>}
+                        {name === 'globe' && <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>}
                     </svg>
                 );
             }
             return <i data-lucide={name} style={{ width: size, height: size }} className={className}></i>;
         };
 
-        // CONFIGURACIÓN RADIO
         const RADIO_CONFIG = {
             name: "Voces Campesinas",
             streamUrl: "https://a1.asurahosting.com/listen/voces_campesinas/radio.mp3",
@@ -159,23 +163,23 @@
             youtubeUrl: "https://www.youtube.com/@VocesCampesinasCo",
             webUrl: "https://www.vocescampesinas.co",
             email: "emisora@vocescampesinas.co",
-            bloggerUrl: "https://vocescampesinas.blogspot.com/feeds/posts/default?alt=json&max-results=5"
+            bloggerUrl: "https://vocescampesinas.blogspot.com/feeds/posts/default?alt=json&max-results=10"
         };
 
-        // PROGRAMACIÓN
         const SCHEDULE = [
             { start: "00:00", end: "04:59", title: "La Licuadora", host: "Franja Crossover", org: "Voces Campesinas", category: "franja", days: [1,2,3,4,5,6,0], image: "la-licuadora.jpg" },
             { start: "05:00", end: "06:29", title: "Alborada Campesina", host: "Música Colombiana", org: "Producción Local", category: "franja", days: [1,2,3,4,5,6,0], image: "alborada.jpg" },
-	    { start: "13:00", end: "13:59", title: "Perreo Campesino", host: "Música Carranguera", org: "Voces Campesinas", category: "franja", days: [1,2,3,4,5,6,0], image: "perreo-tarde.jpg" },
-	    { start: "20:00", end: "20:59", title: "Cosecha de Amor", host: "Música Romántica", org: "Voces Campesinas", category: "franja", days: [1,2,3,4,6,0], image: "cosecha-amor.jpg" },
-	    { start: "07:00", end: "07:59", title: "Perreo Campesino", host: "Música Carranguera", org: "Voces Campesinas", category: "franja", days: [1,2,4,5,0], image: "perreo-campesino.jpg" },
-	    { start: "21:30", end: "23:59", title: "Cuentos y Leyendas", host: "Abuelo Ricardo", org: "Proyecto Memoria", category: "propio", days: [2,3,4,5], image: "cuentos-leyendas.jpg" }
-            { start: "19:00", end: "19:59", title: "La Parcela Política", host: "Walter Sosa", org: "Voces Campesinas", category: "propio", days: [1, 4], image: "parcela-noche.jpg" },
- 	    { start: "19:30", end: "20:29", title: "Palabras del Territorio", host: "Walter Sosa", org: "Voces Campesinas", category: "propio", days: [2, 6], image: "palabras-territorio.jpg" },
-	    { start: "19:30", end: "22:59", title: "Lo Mejor de Región Activa", host: "Jotta Rincón y Walter Sosa", org: "CorpoActúa", category: "reemision", days: [5], image: "resumen-region.jpg" },
-            { start: "06:30", end: "06:59", title: "Campesinos en Acción", host: "José Antonio Gonzáles", org: "ANUC La Palma", category: "entidad", days: [6, 1], image: "campesinos-accion.jpg" },
-            { start: "07:30", end: "10:59", title: "Magazín Región Activa", host: "Jotta Ricón y Walter Sosa", org: "CorpoActúa", category: "entidad", days: [6, 3], image: "region-activa.jpg" },
-            { start: "19:30", end: "20:30", title: "Renacer Andino", host: "Ramón Olivares", org: "Grupo Cultural", category: "entidad", days: [0, 3], image: "renacer-andino.jpg" },      
+            { start: "06:30", end: "06:59", title: "Campesinos en Acción", host: "Equipo Comunicaciones", org: "ANUC La Palma", category: "entidad", days: [6, 1], image: "campesinos-accion.jpg" },
+            { start: "07:00", end: "07:59", title: "Perreo Campesino", host: "Música Carranguera", org: "Voces Campesinas", category: "franja", days: [1,2,4,5,0], image: "perreo-campesino.jpg" },
+            { start: "07:30", end: "10:59", title: "Magazín Región Activa", host: "Jotta Ricón", org: "CorpoActúa", category: "entidad", days: [6, 3], image: "region-activa.jpg" },
+            { start: "12:00", end: "14:15", title: "La Parcela Política", host: "Walter Sosa", org: "Voces Campesinas", category: "propio", days: [4, 5], image: "parcela-politica.jpg" },
+            { start: "13:00", end: "13:59", title: "Perreo Campesino", host: "Música Carranguera", org: "Voces Campesinas", category: "franja", days: [1,2,3,4,5,6,0], image: "perreo-tarde.jpg" },
+            { start: "19:00", end: "19:59", title: "La Parcela Política", host: "Walter Sosa", org: "Voces Campesinas", category: "propio", days: [1], image: "parcela-noche.jpg" },
+            { start: "19:30", end: "20:29", title: "Palabras del Territorio", host: "Walter Sosa", org: "Voces Campesinas", category: "propio", days: [2, 6], image: "palabras-territorio.jpg" },
+            { start: "19:30", end: "20:30", title: "Renacer Andino", host: "Ramón Olivares", org: "Grupo Cultural", category: "entidad", days: [0, 3], image: "renacer-andino.jpg" },
+            { start: "19:30", end: "22:59", title: "Lo Mejor de Región Activa", host: "Jotta Rincón", org: "CorpoActúa", category: "reemision", days: [5], image: "resumen-region.jpg" },
+            { start: "20:00", end: "20:59", title: "Cosecha de Amor", host: "Dj Rosado", org: "Voces Campesinas", category: "franja", days: [1,2,3,4,6,0], image: "cosecha-amor.jpg" },
+            { start: "21:30", end: "23:59", title: "Cuentos y Leyendas", host: "Abuelo Ricardo", org: "Proyecto Memoria", category: "propio", days: [2,3,4,5], image: "cuentos-leyendas.jpg" }
         ];
 
         const DAYS_FULL = ["Domingo", "Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
@@ -192,38 +196,22 @@
             const [loadingNews, setLoadingNews] = useState(false);
             const [formType, setFormType] = useState('mensaje'); 
             const [requestData, setRequestData] = useState({ nombre: '', cancion: '', interprete: '', mensaje: '' });
-
-            // Estados para Instalación
             const [showInstallBtn, setShowInstallBtn] = useState(false);
             const [deferredPrompt, setDeferredPrompt] = useState(null);
 
             const audioRef = useRef(null);
 
             useEffect(() => {
-                const timer = setTimeout(() => setIsSplash(false), 4500);
+                const timer = setTimeout(() => setIsSplash(false), 4000);
 
                 if ('serviceWorker' in navigator) {
-                    navigator.serviceWorker.register('sw.js').then(reg => {
-                        reg.onupdatefound = () => {
-                            const newWorker = reg.installing;
-                            newWorker.onstatechange = () => {
-                                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                    window.location.reload();
-                                }
-                            };
-                        };
-                    }).catch(() => {});
+                    navigator.serviceWorker.register('sw.js').catch(e => console.log(e));
                 }
 
                 window.addEventListener('beforeinstallprompt', (e) => {
                     e.preventDefault();
                     setDeferredPrompt(e);
                     setShowInstallBtn(true);
-                });
-
-                window.addEventListener('appinstalled', () => {
-                    setShowInstallBtn(false);
-                    setDeferredPrompt(null);
                 });
 
                 const updateTimeLogic = () => {
@@ -236,7 +224,7 @@
                     setCurrentProgram(prog || null);
 
                     let upcoming = null;
-                    let dayOffsetLabel = "";
+                    let label = "Hoy";
                     upcoming = SCHEDULE.filter(p => p.days.includes(day)).filter(p => timeToMin(p.start) > cur).sort((a,b) => timeToMin(a.start) - timeToMin(b.start))[0];
 
                     if (!upcoming) {
@@ -245,14 +233,13 @@
                             const found = SCHEDULE.filter(p => p.days.includes(checkDay)).sort((a,b) => timeToMin(a.start) - timeToMin(b.start))[0];
                             if (found) {
                                 upcoming = found;
-                                dayOffsetLabel = i === 1 ? "Mañana" : DAYS_FULL[checkDay];
+                                label = i === 1 ? "Mañana" : DAYS_FULL[checkDay];
                                 break;
                             }
                         }
-                    } else { dayOffsetLabel = "Hoy"; }
-
+                    }
                     setNextProgram(upcoming || null);
-                    setNextDayInfo(dayOffsetLabel);
+                    setNextDayInfo(label);
                 };
 
                 updateTimeLogic();
@@ -260,60 +247,34 @@
                 return () => { clearInterval(interval); clearTimeout(timer); };
             }, []);
 
-            // ========================================================
-            // LÓGICA MEJORADA DE NOTICIAS (CON DOBLE PROXY)
-            // ========================================================
             useEffect(() => {
                 if (currentView === 'news' && news.length === 0) {
                     setLoadingNews(true);
-                    
                     const targetUrl = RADIO_CONFIG.bloggerUrl;
-                    const proxy1 = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl + '&t=' + Date.now())}`;
-                    const proxy2 = `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`;
-
-                    const parseFeed = (data) => {
-                        try {
-                            const entries = data.feed.entry || [];
-                            const formatted = entries.map(entry => {
-                                const link = entry.link.find(l => l.rel === 'alternate').href;
+                    const p1 = `https://api.allorigins.win/get?url=${encodeURIComponent(targetUrl + '&t=' + Date.now())}`;
+                    
+                    fetch(p1)
+                        .then(r => r.json())
+                        .then(d => {
+                            const data = JSON.parse(d.contents);
+                            const items = (data.feed.entry || []).map(e => {
+                                const l = e.link.find(link => link.rel === 'alternate').href;
                                 let img = "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&q=80&w=400";
-                                if (entry.media$thumbnail) img = entry.media$thumbnail.url.replace('s72-c', 's400');
-                                else if (entry.content && entry.content.$t.includes('src=')) {
-                                    const match = entry.content.$t.match(/src="([^"]+)"/);
-                                    if(match) img = match[1];
-                                }
-                                
+                                if (e.media$thumbnail) img = e.media$thumbnail.url.replace('s72-c', 's400');
                                 return {
-                                    title: entry.title.$t,
-                                    link: link,
-                                    date: new Date(entry.published.$t).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }),
+                                    title: e.title.$t,
+                                    link: l,
+                                    date: new Date(e.published.$t).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }),
                                     thumbnail: img,
-                                    summary: entry.summary ? entry.summary.$t.replace(/<[^>]*>?/gm, '').substring(0, 100).trim() + '...' : 'Toca para leer la noticia completa en nuestro portal.'
+                                    summary: e.summary ? e.summary.$t.replace(/<[^>]*>?/gm, '').substring(0, 90).trim() + '...' : 'Toca para leer más.'
                                 };
                             });
-                            setNews(formatted);
+                            setNews(items);
                             setLoadingNews(false);
-                        } catch (e) {
-                            throw new Error("Error procesando formato de Blogger");
-                        }
-                    };
-
-                    // Intento 1: AllOrigins
-                    fetch(proxy1)
-                        .then(res => res.json())
-                        .then(proxyData => {
-                            if (!proxyData.contents) throw new Error("Proxy vacío");
-                            parseFeed(JSON.parse(proxyData.contents));
                         })
                         .catch(() => {
-                            // Intento 2: CORS Proxy IO (Respaldo)
-                            fetch(proxy2)
-                                .then(res => res.json())
-                                .then(data => parseFeed(data))
-                                .catch(() => {
-                                    setLoadingNews(false);
-                                    setNews([{ title: "No se pudieron cargar las noticias", summary: "Hubo un problema de conexión con el blog. Por favor intenta de nuevo más tarde.", link: RADIO_CONFIG.webUrl, date: "Error", thumbnail: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&q=80&w=300" }]);
-                                });
+                            setLoadingNews(false);
+                            setNews([]);
                         });
                 }
             }, [currentView, news.length]);
@@ -336,36 +297,29 @@
 
             const sendWp = (e) => {
                 e.preventDefault();
-                let text = "📻 👋 ¡Hola Voces Campesinas!\n\n";
-                if(formType === 'cancion') {
-                    text += "🎵 *PEDIDO MUSICAL*\n👤 *Nombre:* " + requestData.nombre + "\n💿 *Canción:* " + requestData.cancion + "\n🎤 *Artista:* " + requestData.interprete + "\n";
-                } else {
-                    text += "💬 *MENSAJE*\n👤 *De:* " + requestData.nombre + "\n";
-                }
-                text += "\n✍️ *Mensaje:* " + requestData.mensaje;
-                window.open(`https://api.whatsapp.com/send?phone=${RADIO_CONFIG.whatsapp}&text=${encodeURIComponent(text)}`, '_blank');
+                let msg = `📻 ¡Hola Voces Campesinas!\n\n*${formType === 'cancion' ? 'PEDIDO MUSICAL' : 'MENSAJE'}*\nNombre: ${requestData.nombre}\n${formType === 'cancion' ? 'Canción: '+requestData.cancion+'\nArtista: '+requestData.interprete+'\n' : ''}Mensaje: ${requestData.mensaje}`;
+                window.open(`https://api.whatsapp.com/send?phone=${RADIO_CONFIG.whatsapp}&text=${encodeURIComponent(msg)}`, '_blank');
             };
 
             if (isSplash) {
                 return (
                     <div className="fixed inset-0 bg-[#17202A] z-[100] flex flex-col items-center justify-center text-white p-8 overflow-hidden">
                         <div className="relative mb-10 w-48 h-48 animate-speaker">
-                            <img src={RADIO_CONFIG.logoPath} className="w-full h-full object-contain" alt="Logo Splash" />
+                            <img src={RADIO_CONFIG.logoPath} className="w-full h-full object-contain" alt="Logo" />
                         </div>
                         <div className="text-center space-y-2">
-                            <p className="text-[#F4D03F] text-[10px] font-black tracking-[0.5em] animate-pulse">Emisora Digital</p>
-                            <h1 className="text-4xl font-black tracking-tighter italic leading-none">Voces Campesinas</h1>
-                            <p className="text-white/40 text-xs font-bold tracking-[0.2em] italic leading-tight">"El Campo Nos Une"</p>
+                            <p className="text-[#F4D03F] text-[10px] font-black uppercase tracking-[0.5em]">Emisora Digital</p>
+                            <h1 className="text-4xl font-black tracking-tighter italic">Voces Campesinas</h1>
+                            <p className="text-white/40 text-xs font-bold tracking-[0.2em] italic">"El Campo Nos Une"</p>
                         </div>
                         <div className="mt-12 w-32 h-0.5 bg-white/5 rounded-full overflow-hidden">
-                            <div className="h-full bg-[#F4D03F] w-1/3 animate-[loading_2s_infinite]"></div>
+                            <div className="h-full bg-[#F4D03F] w-1/3 animate-loading"></div>
                         </div>
                         <div className="absolute bottom-10 text-center opacity-40 text-[11px] font-medium tracking-tight space-y-1.5 px-4">
                             <p>Un Proyecto Desarrollado</p>
                             <p>Con Inteligencia Emocional - EI</p>
                             <p className="font-black text-[#F4D03F] text-xs">Poporo Design</p>
                         </div>
-                        <style>{`@keyframes loading { 0% { transform: translateX(-100%); } 100% { transform: translateX(300%); } }`}</style>
                     </div>
                 );
             }
@@ -374,56 +328,46 @@
                 <div className="min-h-screen bg-[#17202A] text-white flex flex-col max-w-lg mx-auto shadow-2xl overflow-hidden relative">
                     <audio ref={audioRef} preload="auto" />
                     
-                    {/* BOTÓN INSTALACIÓN */}
                     {showInstallBtn && (
-                        <button onClick={handleInstall} className="fixed bottom-24 right-4 z-[60] bg-[#F4D03F] text-[#17202A] px-4 py-3 rounded-full shadow-2xl flex items-center gap-2 font-black text-xs animate-install active:scale-95 transition-transform">
+                        <button onClick={handleInstall} className="fixed bottom-24 right-4 z-[60] bg-[#F4D03F] text-[#17202A] px-4 py-3 rounded-full shadow-2xl flex items-center gap-2 font-black text-xs animate-install">
                             <Icon name="download-cloud" size={18} /> Instalar App
                         </button>
                     )}
 
-                    {/* REPRODUCTOR SUPERIOR */}
                     <div className="fixed top-0 w-full max-w-lg z-50 pointer-events-none">
-                        <div className="pointer-events-auto bg-[#0a0e13]/95 backdrop-blur-3xl border-b border-[#F4D03F]/30 p-3 shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
+                        <div className="pointer-events-auto bg-[#0a0e13]/95 backdrop-blur-3xl border-b border-[#F4D03F]/30 p-3 shadow-2xl">
                             <div className="flex items-center justify-between gap-4 px-1">
                                 <div className="flex items-center gap-3 flex-1 min-w-0">
-                                    <div className="relative shrink-0">
-                                        <div className={`w-3 h-3 rounded-full ${isPlaying ? 'bg-[#6cd14f] animate-pulse shadow-[0_0_10px_#6cd14f]' : 'bg-white/10'}`}></div>
-                                    </div>
+                                    <div className={`w-3 h-3 rounded-full ${isPlaying ? 'bg-[#6cd14f] animate-pulse' : 'bg-white/10'}`}></div>
                                     <div className="min-w-0">
-                                        <p className="text-[13px] font-bold text-white/95 truncate leading-tight mb-0.5">Escúchas la Emisora Digital</p>
-                                        <p className="text-[11px] font-black text-[#F4D03F] tracking-tighter leading-none opacity-90">www.VocesCampesinas.Co</p>
+                                        <p className="text-[13px] font-bold text-white/95 truncate">Estás escuchando la emisora</p>
+                                        <p className="text-[11px] font-black text-[#F4D03F] tracking-tighter opacity-90">www.VocesCampesinas.co</p>
                                     </div>
                                 </div>
-                                <div className="flex items-center gap-2 shrink-0">
-                                    <button onClick={() => {audioRef.current.pause(); audioRef.current.src=""; setIsPlaying(false);}} className="w-10 h-10 bg-white/5 text-white/30 rounded-lg flex items-center justify-center transition-colors active:bg-white/10">
-                                        <Icon name="square" size={16} className="text-[#C0392B]" />
-                                    </button>
-                                    <button onClick={togglePlay} className="w-12 h-12 bg-[#F4D03F] text-black rounded-lg flex items-center justify-center shadow-xl active:scale-90 transition-all">
-                                        {isPlaying ? <Icon name="pause" size={22} /> : <Icon name="play" size={22} className="ml-0.5" />}
-                                    </button>
+                                <div className="flex items-center gap-2">
+                                    <button onClick={() => {audioRef.current.pause(); audioRef.current.src=""; setIsPlaying(false);}} className="w-10 h-10 bg-white/5 text-white/30 rounded-lg flex items-center justify-center transition-colors"><Icon name="square" size={16} className="text-[#C0392B]" /></button>
+                                    <button onClick={togglePlay} className="w-12 h-12 bg-[#F4D03F] text-black rounded-lg flex items-center justify-center shadow-xl active:scale-90 transition-all">{isPlaying ? <Icon name="pause" size={22} /> : <Icon name="play" size={22} />}</button>
                                 </div>
                             </div>
                             <div className="flex items-center gap-3 mt-3 px-1">
                                 <Icon name={volume == 0 ? "volume-x" : "volume-2"} size={14} className="text-[#F4D03F]/30" />
-                                <input type="range" min="0" max="1" step="0.01" value={volume} onChange={e => {setVolume(e.target.value); audioRef.current.volume = e.target.value;}} className="flex-1 h-1 bg-white/10 rounded-full appearance-none volume-slider cursor-pointer" />
-                                <span className="text-[9px] font-bold text-white/20 w-6 text-right">{Math.round(volume*100)}</span>
+                                <input type="range" min="0" max="1" step="0.01" value={volume} onChange={e => {setVolume(e.target.value); audioRef.current.volume = e.target.value;}} className="flex-1 h-1 bg-white/10 rounded-full appearance-none volume-slider" />
+                                <span className="text-[9px] font-bold text-white/20 w-7 text-right">{Math.round(volume*100)}%</span>
                             </div>
                         </div>
                     </div>
 
                     <main className="flex-1 overflow-y-auto hide-scrollbar pt-[108px] pb-32">
-                        
-                        {/* --- VISTA: INICIO --- */}
                         {currentView === 'home' && (
                             <div className="animate-in fade-in duration-700">
-                                <div className={`live-card ${isPlaying ? 'animate-speaker' : ''}`} style={{ backgroundImage: `url(${currentProgram?.image || 'banner-radio.jpg'})` }}>
+                                <div className="live-card" style={{ backgroundImage: `url(${currentProgram?.image || 'https://images.unsplash.com/photo-1516733968668-dbdce39c46ef?auto=format&fit=crop&q=80&w=600'})` }}>
                                     <div className="absolute inset-0 z-10 p-4 flex flex-col justify-end">
                                         <div className="flex items-center gap-2 mb-1">
-                                            <span className="bg-red-600 text-white text-[8px] font-black px-1.5 py-0.5 rounded-full animate-pulse uppercase tracking-widest">En Vivo</span>
-                                            <span className="text-white/60 text-[9px] font-bold tracking-tighter">Escuchas:</span>
+                                            <span className="bg-red-600 text-white text-[8px] font-black px-1.5 py-0.5 rounded-full animate-pulse tracking-widest uppercase">En Vivo</span>
+                                            <span className="text-white/60 text-[9px] font-bold tracking-tighter">Transmitiendo:</span>
                                         </div>
-                                        <h2 className="text-xl font-black text-white leading-tight tracking-tighter drop-shadow-lg truncate">{currentProgram?.title || "Música de la Tierrita..."}</h2>
-                                        <p className="text-[#F4D03F] text-[10px] font-bold italic opacity-90 truncate">{currentProgram ? ` ${currentProgram.host}` : "La mejor música para escuchar"}</p>
+                                        <h2 className="text-xl font-black text-white truncate">{currentProgram?.title || "Música de la Tierrita"}</h2>
+                                        <p className="text-[#F4D03F] text-[10px] font-bold italic opacity-90 truncate">{currentProgram ? `con ${currentProgram.host}` : "Lo mejor del campo colombiano"}</p>
                                     </div>
                                 </div>
 
@@ -431,18 +375,18 @@
                                     <div className="p-2 bg-[#F4D03F]/10 rounded-xl shrink-0"><Icon name="chevron-right" className="text-[#F4D03F]" size={16} /></div>
                                     <div className="overflow-hidden flex-1">
                                         <div className="flex justify-between items-center gap-2 mb-0.5">
-                                            <p className="text-[7px] font-black text-[#F4D03F]/70 tracking-[0.2em]">A continuación:</p>
+                                            <p className="text-[7px] font-black text-[#F4D03F]/70 tracking-[0.2em] uppercase">A continuación</p>
                                             <span className="text-[6px] font-black bg-[#F4D03F] text-[#17202A] px-1.5 py-0.5 rounded whitespace-nowrap">{nextDayInfo}</span>
                                         </div>
-                                        <h3 className="font-black text-white text-sm truncate leading-none mb-0.5">{nextProgram ? nextProgram.title : "Música de la Tierrita..."}</h3>
+                                        <h3 className="font-black text-white text-sm truncate">{nextProgram ? nextProgram.title : "Música de la Tierrita"}</h3>
                                         <p className="text-[9px] text-white/40 italic truncate"><span className="text-[#F4D03F]/80 font-bold">{nextProgram?.start}</span> {nextProgram?.host ? `con ${nextProgram.host}` : "Franja Musical"}</p>
                                     </div>
                                 </div>
 
                                 <div className="px-6 py-6">
                                     <div className="text-center mb-5">
-                                        <h2 className="text-lg font-black text-[#F4D03F] tracking-tighter leading-tight">Envianos tus Mensajes...</h2>
-                                        <p className="text-[8px] font-bold text-white/30 tracking-[0.2em] italic">Saludos y Complacencias</p>
+                                        <h2 className="text-lg font-black text-[#F4D03F] tracking-tighter">Escríbenos</h2>
+                                        <p className="text-[8px] font-bold text-white/30 tracking-[0.2em] italic uppercase">Pedidos y Saludos</p>
                                     </div>
                                     <div className="flex gap-2 mb-4 bg-black/40 p-1 rounded-xl border border-white/5">
                                         <button onClick={() => setFormType('mensaje')} className={`flex-1 py-2 rounded-lg text-[9px] font-bold transition-all ${formType === 'mensaje' ? 'bg-[#F4D03F] text-black shadow-lg' : 'text-white/40'}`}>Mensaje</button>
@@ -451,16 +395,16 @@
                                     <form onSubmit={sendWp} className="space-y-2.5">
                                         <input required placeholder="¿Cómo te llamas?" className="w-full glass-card p-3.5 rounded-xl text-xs outline-none focus:border-[#F4D03F]/50 text-white" onChange={e => setRequestData({...requestData, nombre: e.target.value})} />
                                         {formType === 'cancion' && (
-                                            <div className="grid grid-cols-2 gap-2.5 animate-in zoom-in-95">
-                                                <input required placeholder="Canción" className="w-full glass-card p-3.5 rounded-xl text-xs outline-none focus:border-[#F4D03F]/50 text-white" onChange={e => setRequestData({...requestData, cancion: e.target.value})} />
-                                                <input required placeholder="Artista" className="w-full glass-card p-3.5 rounded-xl text-xs outline-none focus:border-[#F4D03F]/50 text-white" onChange={e => setRequestData({...requestData, interprete: e.target.value})} />
+                                            <div className="grid grid-cols-2 gap-2.5">
+                                                <input required placeholder="Canción" className="w-full glass-card p-3.5 rounded-xl text-xs outline-none text-white" onChange={e => setRequestData({...requestData, cancion: e.target.value})} />
+                                                <input required placeholder="Artista" className="w-full glass-card p-3.5 rounded-xl text-xs outline-none text-white" onChange={e => setRequestData({...requestData, interprete: e.target.value})} />
                                             </div>
                                         )}
-                                        <textarea required placeholder="Escribe tu mensaje aquí..." rows="3" className="w-full glass-card p-3.5 rounded-xl text-xs outline-none focus:border-[#F4D03F]/50 resize-none text-white" onChange={e => setRequestData({...requestData, mensaje: e.target.value})}></textarea>
-                                        <button className="w-full bg-[#F4D03F] text-black py-3.5 rounded-xl font-bold text-xs shadow-xl hover:bg-white active:scale-95 transition-all flex items-center justify-center gap-2 mb-4">
+                                        <textarea required placeholder="Escribe aquí..." rows="3" className="w-full glass-card p-3.5 rounded-xl text-xs outline-none resize-none text-white" onChange={e => setRequestData({...requestData, mensaje: e.target.value})}></textarea>
+                                        <button className="w-full bg-[#F4D03F] text-black py-3.5 rounded-xl font-bold text-xs shadow-xl active:scale-95 transition-all flex items-center justify-center gap-2">
                                             <Icon name="message-circle" size={16} /> Enviar a WhatsApp
                                         </button>
-                                        <div className="pt-4 mt-2 border-t border-white/5 flex flex-col items-center gap-2.5 animate-in slide-in-from-top-2 duration-500 text-[10px] text-white/40 uppercase font-bold tracking-widest">
+                                        <div className="pt-4 mt-2 border-t border-white/5 flex flex-col items-center gap-2.5 text-[10px] text-white/40 font-bold uppercase tracking-widest">
                                             <div className="flex items-center gap-2"><Icon name="mail" size={14} className="text-[#F4D03F]" /><span>E-Mail:</span><a href={`mailto:${RADIO_CONFIG.email}`} className="text-white/80 lowercase font-normal">{RADIO_CONFIG.email}</a></div>
                                             <div className="flex items-center gap-2"><Icon name="message-square" size={14} className="text-[#F4D03F]" /><span>Whatsapp:</span><a href={`https://wa.me/${RADIO_CONFIG.whatsapp}`} className="text-white/80">{RADIO_CONFIG.displayWhatsapp}</a></div>
                                         </div>
@@ -469,68 +413,25 @@
                             </div>
                         )}
 
-                        {/* --- VISTA: NOTICIAS (REPARADA) --- */}
-                        {currentView === 'news' && (
-                            <div className="px-4 pb-64 animate-in fade-in duration-500 min-h-screen">
-                                <h2 className="text-xl font-bold text-center mb-6 pt-4 text-[#F4D03F]">Conexión Territorial</h2>
-                                {loadingNews ? (
-                                    <div className="flex flex-col items-center justify-center py-20">
-                                        <div className="w-10 h-10 border-4 border-[#F4D03F]/10 border-t-[#F4D03F] rounded-full animate-spin mb-4"></div>
-                                        <p className="text-xs font-bold text-white/40 tracking-widest uppercase">CArgando Información...</p>
-                                    </div>
-                                ) : (
-                                    <div className="space-y-4">
-                                        {news.length > 0 ? news.map((item, idx) => (
-                                            <div key={idx} onClick={() => window.open(item.link, '_blank')} className="glass-card flex gap-4 p-3 active:scale-95 transition-all cursor-pointer border-white/10 hover:bg-white/5">
-                                                <div className="shrink-0 w-[90px] h-[90px] rounded-lg overflow-hidden bg-black/50 border border-white/5">
-                                                    <img src={item.thumbnail} alt="Noticia" className="w-full h-full object-cover" onError={(e) => e.target.src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&q=80&w=300"} />
-                                                </div>
-                                                <div className="flex-1 min-w-0 flex flex-col justify-between py-0.5">
-                                                    <div>
-                                                        <span className="text-[8px] font-black bg-[#F4D03F] text-[#17202A] px-1.5 py-0.5 rounded mb-1 inline-block">{item.date}</span>
-                                                        <h3 className="font-bold text-[13px] text-white leading-tight mb-1 line-clamp-2">{item.title}</h3>
-                                                    </div>
-                                                    <p className="text-[10px] text-white/40 italic line-clamp-2">{item.summary}</p>
-                                                </div>
-                                            </div>
-                                        )) : (
-                                            <div className="text-center py-20 text-white/20 uppercase font-black tracking-widest">
-                                                No se encontraron noticias
-                                            </div>
-                                        )}
-                                    </div>
-                                )}
-                            </div>
-                        )}
-
-                        {/* --- OTRAS VISTAS --- */}
                         {currentView === 'schedule' && (
-                            <div className="px-6 pb-64 animate-in fade-in duration-500 overflow-y-auto">
+                            <div className="px-6 animate-in fade-in duration-500 min-h-screen">
                                 <h2 className="text-xl font-bold text-center mb-6 pt-4 text-[#F4D03F]">Programación</h2>
                                 {['propio', 'franja', 'entidad', 'reemision'].map(cat => {
                                     const progs = SCHEDULE.filter(p => p.category === cat);
                                     if(progs.length === 0) return null;
-                                    const labels = { propio: 'Producción Local', franja: 'Franjas Musicales', entidad: 'RIT - Información Territorial', reemision: 'Reemisiones' };
-                                    const todayNum = new Date().getDay();
+                                    const labels = { propio: 'Producción Local', franja: 'Franjas Musicales', entidad: 'Información Territorial', reemision: 'Reemisiones' };
                                     return (
                                         <div key={cat} className="mb-8">
-                                            <div className="flex items-center gap-2 mb-3 opacity-50"><Icon name="calendar" size={14}/><span className="text-[10px] font-bold tracking-widest">{labels[cat]}</span></div>
+                                            <div className="flex items-center gap-2 mb-3 opacity-50"><Icon name="calendar" size={14}/><span className="text-[10px] font-bold tracking-widest uppercase">{labels[cat]}</span></div>
                                             <div className="space-y-3">
                                                 {progs.map((p, i) => (
                                                     <div key={i} className="glass-card p-4">
-                                                        <div className="flex items-center justify-between mb-2">
+                                                        <div className="flex justify-between items-center mb-1">
                                                             <span className="text-[#F4D03F] text-[11px] font-bold">{p.start} - {p.end}</span>
-                                                            <div className="flex gap-1">
-                                                                {p.days?.map(d => (
-                                                                    <span key={d} className={`text-[7px] font-black px-1.5 py-0.5 rounded border ${d === todayNum ? 'bg-[#F4D03F] text-[#17202A] border-[#F4D03F] shadow-lg' : 'bg-white/10 text-white/80 border-white/10'}`}>
-                                                                        {['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'][d]}
-                                                                    </span>
-                                                                ))}
-                                                            </div>
-                                                            {currentProgram?.title === p.title && <div className="bg-[#F4D03F] text-black px-2 py-0.5 rounded text-[8px] font-bold animate-pulse">Al Aire</div>}
+                                                            {currentProgram?.title === p.title && <div className="bg-[#F4D03F] text-black px-2 py-0.5 rounded text-[8px] font-bold">Al Aire</div>}
                                                         </div>
-                                                        <div className="font-bold text-base text-white/95 leading-tight mb-1">{p.title}</div>
-                                                        <div className="text-white/40 text-[10px] italic flex items-center gap-1.5 flex-wrap"><span>con {p.host}</span>{p.org && <span className="text-[#F4D03F]/60 font-bold uppercase not-italic">• {p.org}</span>}</div>
+                                                        <div className="font-bold text-base">{p.title}</div>
+                                                        <div className="text-white/40 text-[10px] italic"><span>con {p.host}</span></div>
                                                     </div>
                                                 ))}
                                             </div>
@@ -540,12 +441,40 @@
                             </div>
                         )}
 
+                        {currentView === 'news' && (
+                            <div className="px-4 animate-in fade-in duration-500 min-h-screen">
+                                <h2 className="text-xl font-bold text-center mb-6 pt-4 text-[#F4D03F]">Últimas Noticias</h2>
+                                {loadingNews ? (
+                                    <div className="flex flex-col items-center justify-center py-20 text-white/40 text-xs font-bold uppercase animate-pulse tracking-widest">Cargando noticias...</div>
+                                ) : (
+                                    <div className="space-y-4">
+                                        {news.length > 0 ? news.map((item, idx) => (
+                                            <div key={idx} onClick={() => window.open(item.link, '_blank')} className="glass-card flex gap-4 p-3 hover:bg-white/5 transition-all cursor-pointer">
+                                                <div className="shrink-0 w-[90px] h-[90px] rounded-lg overflow-hidden"><img src={item.thumbnail} className="w-full h-full object-cover" /></div>
+                                                <div className="flex-1 min-w-0">
+                                                    <span className="text-[8px] font-black bg-[#F4D03F] text-[#17202A] px-1.5 py-0.5 rounded mb-1 inline-block">{item.date}</span>
+                                                    <h3 className="font-bold text-[13px] leading-tight mb-1">{item.title}</h3>
+                                                    <p className="text-[10px] text-white/40 italic line-clamp-2">{item.summary}</p>
+                                                </div>
+                                            </div>
+                                        )) : <div className="text-center py-20 text-white/20 font-black uppercase">No hay noticias hoy</div>}
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
                         {currentView === 'social' && (
-                            <div className="px-6 pb-64 animate-in fade-in max-w-md mx-auto text-center">
-                                <h2 className="text-xl font-bold text-center mb-1 pt-4 text-[#F4D03F]">Siguenos, y haz Parte de Nuestra Comunidad</h2>
-                                <p className="text-white/40 text-[10px] font-bold tracking-widest text-center mb-10 italic">#ElCampoNosUne</p>
+                            <div className="px-6 animate-in fade-in text-center max-w-md mx-auto">
+                                <h2 className="text-xl font-bold mb-1 pt-4 text-[#F4D03F]">Conéctate</h2>
+                                <p className="text-white/40 text-[10px] font-bold tracking-widest mb-10 italic">#ElCampoNosUne</p>
                                 <div className="grid grid-cols-1 gap-4">
-                                    {[ { n: 'Sitio Web', i: 'globe', u: RADIO_CONFIG.webUrl }, { n: 'YouTube', i: 'youtube', u: RADIO_CONFIG.youtubeUrl }, { n: 'Facebook', i: 'facebook', u: "https://www.facebook.com/VocesCampesinas.co" }, { n: 'Instagram', i: 'instagram', u: "https://www.instagram.com/vocescampesinas.co/" }, { n: 'TikTok', i: 'tiktok', u: "https://www.tiktok.com/@vocescampesinas.co" } ].map(s => (
+                                    {[
+                                        { n: 'Sitio Web', i: 'globe', u: RADIO_CONFIG.webUrl },
+                                        { n: 'YouTube', i: 'youtube', u: RADIO_CONFIG.youtubeUrl },
+                                        { n: 'Facebook', i: 'facebook', u: "https://www.facebook.com/VocesCampesinas.co" },
+                                        { n: 'Instagram', i: 'instagram', u: "https://www.instagram.com/vocescampesinas.co/" },
+                                        { n: 'TikTok', i: 'tiktok', u: "https://www.tiktok.com/@vocescampesinas.co" }
+                                    ].map(s => (
                                         <button key={s.n} onClick={() => window.open(s.u, '_blank')} className="glass-card flex items-center justify-between p-5 hover:bg-white/5 transition-all">
                                             <div className="flex items-center gap-4"><Icon name={s.i} size={22} className="text-[#F4D03F]" /><span className="text-sm font-semibold">{s.n}</span></div>
                                             <Icon name="chevron-right" size={14} className="opacity-20" />
@@ -556,10 +485,14 @@
                         )}
                     </main>
 
-                    {/* BARRA DE NAVEGACIÓN */}
                     <div className="fixed bottom-0 w-full max-w-lg z-50 pointer-events-none">
-                        <nav className="pointer-events-auto bg-[#0a0e13]/95 backdrop-blur-xl border-t border-white/5 flex justify-around items-center pt-2 pb-6 shadow-[0_-10px_40px_rgba(0,0,0,0.5)]">
-                            {[ { id: 'home', l: 'Inicio', i: 'radio' }, { id: 'schedule', l: 'Programación', i: 'calendar' }, { id: 'news', l: 'Noticias', i: 'newspaper' }, { id: 'social', l: 'Redes', i: 'share-2' } ].map(t => (
+                        <nav className="pointer-events-auto bg-[#0a0e13]/95 backdrop-blur-xl border-t border-white/5 flex justify-around items-center pt-2 pb-6 shadow-2xl">
+                            {[ 
+                                { id: 'home', l: 'Radio', i: 'radio' }, 
+                                { id: 'schedule', l: 'Horarios', i: 'calendar' }, 
+                                { id: 'news', l: 'Noticias', i: 'newspaper' }, 
+                                { id: 'social', l: 'Redes', i: 'share-2' } 
+                            ].map(t => (
                                 <button key={t.id} onClick={() => setCurrentView(t.id)} className={`flex flex-col items-center gap-1 transition-all px-6 py-2 ${currentView === t.id ? 'active-tab' : 'text-white/30'}`}>
                                     <Icon name={t.i} size={20} />
                                     <span className="text-[9px] font-bold tracking-tight">{t.l}</span>
