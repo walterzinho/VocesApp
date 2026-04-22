@@ -360,10 +360,10 @@
                     <main className="flex-1 overflow-y-auto hide-scrollbar pt-[108px] pb-32">
                         {currentView === 'home' && (
                             <div className="animate-in fade-in duration-700">
-                                <div className="live-card" style={{ backgroundImage: `url(${currentProgram?.image || 'general-voces.jpg'})` }}>
+                                <div className="live-card" style={{ backgroundImage: `url(${currentProgram?.image || 'general-musica.jpg'})` }}>
                                     <div className="absolute inset-0 z-10 p-4 flex flex-col justify-end">
                                         <div className="flex items-center gap-2 mb-1">
-                                            <span className="bg-red-600 text-white text-[8px] font-black px-1.5 py-0.5 rounded-full animate-pulse tracking-widest uppercase">En Vivo</span>
+                                            <span className="bg-red-600 text-white text-[8px] font-black px-1.5 py-0.5 rounded-full animate-pulse uppercase tracking-widest">En Vivo</span>
                                             <span className="text-white/60 text-[9px] font-bold tracking-tighter">Transmitiendo:</span>
                                         </div>
                                         <h2 className="text-xl font-black text-white truncate">{currentProgram?.title || "Música de la Tierrita"}</h2>
@@ -442,7 +442,7 @@
                         )}
 
                         {currentView === 'news' && (
-                            <div className="px-4 animate-in fade-in duration-500 min-h-screen">
+                            <div className="px-4 pb-64 animate-in fade-in duration-500 min-h-screen">
                                 <h2 className="text-xl font-bold text-center mb-6 pt-4 text-[#F4D03F]">Últimas Noticias</h2>
                                 {loadingNews ? (
                                     <div className="flex flex-col items-center justify-center py-20 text-white/40 text-xs font-bold uppercase animate-pulse tracking-widest">Cargando noticias...</div>
