@@ -56,8 +56,10 @@
             background: var(--carbon); 
             color: white;
             font-family: 'Inter', -apple-system, sans-serif;
-            overscroll-behavior-y: contain;
+            overscroll-behavior-y: none;
             overflow: hidden; 
+            height: 100%;
+            width: 100%;
         }
 
         @keyframes speaker-beat {
@@ -73,6 +75,7 @@
         }
         .animate-loading { animation: loading-bar 2s infinite linear; }
 
+        /* Estilo para que el scroll funcione pero la barra no se vea */
         .hide-scrollbar::-webkit-scrollbar { display: none; }
         .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
 
@@ -126,7 +129,7 @@
     <script type="text/babel">
         const { useState, useEffect, useRef } = React;
         
-        // COMPONENTE: ICON (CONTROLADO PARA EVITAR CONFLICTOS DE DOM)
+        // COMPONENTE: ICON (REPARADO PARA EVITAR ERRORES DE DOM Y SINTAXIS)
         const Icon = ({ name, size = 20, className = "" }) => {
             const iconRef = useRef(null);
             
@@ -358,7 +361,7 @@
             }
 
             return (
-                <div className="min-h-screen bg-[#17202A] text-white flex flex-col max-w-lg mx-auto shadow-2xl overflow-hidden relative">
+                <div className="h-screen h-[100dvh] bg-[#17202A] text-white flex flex-col max-w-lg mx-auto shadow-2xl overflow-hidden relative">
                     <audio ref={audioRef} preload="auto" />
                     
                     {showInstallBtn && (
@@ -390,9 +393,9 @@
                         </div>
                     </div>
 
-                    <main className="flex-1 overflow-y-auto hide-scrollbar pt-[108px] pb-24">
+                    <main className="flex-1 overflow-y-auto hide-scrollbar pt-[115px] pb-20 px-0">
                         {currentView === 'home' && (
-                            <div key="home-view" className="animate-in fade-in duration-700">
+                            <div key="home-view" className="animate-in fade-in duration-700 px-0">
                                 <div className="live-card" style={{ backgroundImage: `url(${currentProgram?.image || 'general-musica.jpg'})` }}>
                                     <div className="absolute inset-0 z-10 p-4 flex flex-col justify-end">
                                         <div className="flex items-center gap-2 mb-1">
@@ -447,7 +450,7 @@
                         )}
 
                         {currentView === 'schedule' && (
-                            <div key="schedule-view" className="px-6 pb-64 animate-in fade-in duration-500 overflow-y-auto min-h-screen">
+                            <div key="schedule-view" className="px-6 animate-in fade-in duration-500">
                                 <h2 className="text-xl font-bold text-center mb-6 pt-4 text-[#F4D03F]">Programación</h2>
                                 {['propio', 'franja', 'entidad', 'reemision'].map(cat => {
                                     const progs = SCHEDULE.filter(p => p.category === cat);
@@ -489,7 +492,7 @@
                         )}
 
                         {currentView === 'news' && (
-                            <div key="news-view" className="px-4 pb-64 animate-in fade-in duration-500 min-h-screen">
+                            <div key="news-view" className="px-4 animate-in fade-in duration-500">
                                 <h2 className="text-xl font-bold text-center mb-6 pt-4 text-[#F4D03F]">Últimas Noticias</h2>
                                 {loadingNews ? (
                                     <div className="flex flex-col items-center justify-center py-24">
@@ -535,7 +538,7 @@
                                         { n: 'Instagram', i: 'instagram', u: "https://www.instagram.com/vocescampesinas.co/" },
                                         { n: 'TikTok', i: 'tiktok', u: "https://www.tiktok.com/@vocescampesinas.co" }
                                     ].map(s => (
-                                        <button key={s.n} onClick={() => window.open(s.u, '_blank')} className="glass-card flex items-center justify-between p-5 hover:bg-white/5 transition-all">
+                                        <button key={s.n} onClick={() => window.open(s.u, '_blank')} className="glass-card flex items-center justify-between p-5 hover:bg-white/5 transition-all border-white/5">
                                             <div className="flex items-center gap-4">
                                                 <Icon name={s.i} size={22} className="text-[#F4D03F]" />
                                                 <span className="text-sm font-semibold">{s.n}</span>
