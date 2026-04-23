@@ -1,5 +1,5 @@
 // --- VERSIÓN 35 - Estabilidad de Audio e Iconos ---
-const CACHE_NAME = 'voces-campesinas-v35';
+const CACHE_NAME = 'voces-campesinas-v0.5';
 
 const ASSETS = [
   './',
