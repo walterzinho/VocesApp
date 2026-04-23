@@ -1,4 +1,4 @@
-// --- VERSIÓN 35 - Estabilidad de Audio e Iconos ---
+// --- VERSIÓN 0.5 - Actualización Forzada y Estabilidad ---
 const CACHE_NAME = 'voces-campesinas-v0.5';
 
 const ASSETS = [
@@ -9,7 +9,6 @@ const ASSETS = [
   './android-icon-192x192.png'
 ];
 
-// Instalación: Guarda los archivos esenciales en el teléfono
 self.addEventListener('install', (event) => {
   self.skipWaiting();
   event.waitUntil(
@@ -19,7 +18,6 @@ self.addEventListener('install', (event) => {
   );
 });
 
-// Activación: Borra versiones viejas de la radio para liberar espacio y actualizar
 self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((cacheNames) => {
@@ -35,7 +33,6 @@ self.addEventListener('activate', (event) => {
   return self.clients.claim();
 });
 
-// Peticiones: Intenta servir desde el caché para que cargue más rápido
 self.addEventListener('fetch', (event) => {
   event.respondWith(
     caches.match(event.request).then((response) => {
