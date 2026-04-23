@@ -184,20 +184,18 @@
         const SCHEDULE = [
             { start: "00:00", end: "04:59", title: "La Licuadora", host: "Franja Crossover", org: "Voces Campesinas", category: "franja", days: [1,2,3,4,5,6,0], image: "la-licuadora.jpg" },
             { start: "05:00", end: "06:29", title: "Alborada Campesina", host: "Música Colombiana", org: "Producción Local", category: "franja", days: [1,2,3,4,5,6,0], image: "alborada.jpg" },
+            { start: "06:15", end: "06:27", title: "Voces del Cosmos", host: "Horoscopo Semanal", org: "Voces Campesinas", category: "propio", days: [6, 1], image: "campesinos-accion.jpg" },
             { start: "06:30", end: "06:59", title: "Campesinos en Acción", host: "Equipo Comunicaciones", org: "ANUC La Palma", category: "entidad", days: [6, 1], image: "campesinos-accion.jpg" },
             { start: "07:00", end: "07:59", title: "Perreo Campesino", host: "Música Carranguera", org: "Voces Campesinas", category: "franja", days: [1,2,4,5,0], image: "perreo-campesino.jpg" },
             { start: "07:30", end: "10:59", title: "Magazín Región Activa", host: "Jotta Ricón", org: "CorpoActúa", category: "entidad", days: [6, 3], image: "region-activa.jpg" },
-            { start: "12:00", end: "14:15", title: "La Parcela Política", host: "Walter Sosa", org: "Voces Campesinas", category: "propio", days: [4, 5], image: "parcela-politica.jpg" },
             { start: "13:00", end: "13:59", title: "Perreo Campesino", host: "Música Carranguera", org: "Voces Campesinas", category: "franja", days: [1,2,3,4,5,6,0], image: "perreo-tarde.jpg" },
-            { start: "19:00", end: "19:59", title: "La Parcela Política", host: "Walter Sosa", org: "Voces Campesinas", category: "propio", days: [1], image: "parcela-noche.jpg" },
-            { start: "19:30", end: "20:29", title: "Palabras del Territorio", host: "Walter Sosa", org: "Voces Campesinas", category: "propio", days: [2, 6], image: "palabras-territorio.jpg" },
             { start: "19:30", end: "20:30", title: "Renacer Andino", host: "Ramón Olivares", org: "Grupo Cultural", category: "entidad", days: [0, 3], image: "renacer-andino.jpg" },
             { start: "19:30", end: "22:59", title: "Lo Mejor de Región Activa", host: "Jotta Rincón", org: "CorpoActúa", category: "reemision", days: [5], image: "resumen-region.jpg" },
-            { start: "20:00", end: "20:59", title: "Cosecha de Amor", host: "Dj Rosado", org: "Voces Campesinas", category: "franja", days: [1,2,3,4,6,0], image: "cosecha-amor.jpg" },
-            { start: "21:30", end: "23:59", title: "Cuentos y Leyendas", host: "Abuelo Ricardo", org: "Proyecto Memoria", category: "propio", days: [2,3,4,5], image: "cuentos-leyendas.jpg" },
+            
             // PROGRAMAS PRÓXIMAMENTE (Ejemplos)
-            { start: "--:--", end: "--:--", title: "Voces del Territorio", host: "Próxima Temporada", org: "Comunidad", category: "pronto", days: [] },
-            { start: "--:--", end: "--:--", title: "Cosecha de Historias", host: "Gran Lanzamiento", org: "Producción Local", category: "pronto", days: [] }
+            { start: "--:--", end: "--:--", title: "La Parcela Política", host: "Gran Lanzamiento", org: "Voces Campesinas", category: "pronto", days: [] },
+            { start: "--:--", end: "--:--", title: "Sembrando Esperanza", host: "Gran Lanzamiento", org: "Voces Campesinas", category: "pronto", days: [] },
+            { start: "--:--", end: "--:--", title: "Palabras del Territorio", host: "Gran Lanzamiento", org: "Voces Campesinas", category: "pronto", days: [] }
         ];
 
         const DAYS_SHORT = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
@@ -356,7 +354,7 @@
                             <img src={RADIO_CONFIG.logoPath} className="w-full h-full object-contain" alt="Logo" />
                         </div>
                         <div className="text-center space-y-2">
-                            <p className="text-[#F4D03F] text-[10px] font-black uppercase tracking-[0.5em]">Emisora Digital</p>
+                            <p className="text-[#F4D03F] text-[10px] font-black tracking-[0.5em]">Emisora Digital</p>
                             <h1 className="text-4xl font-black tracking-tighter italic leading-none">Voces Campesinas</h1>
                             <p className="text-white/40 text-xs font-bold tracking-[0.2em] italic leading-tight">"El Campo Nos Une"</p>
                         </div>
@@ -365,8 +363,8 @@
                         </div>
                         <div className="absolute bottom-10 text-center opacity-40 text-[11px] font-medium tracking-tight space-y-1.5 px-4">
                             <p>Un Proyecto Desarrollado</p>
-                            <p>Con Inteligencia Emocional - EI</p>
-                            <p className="font-black text-[#F4D03F] text-xs">Poporo Design</p>
+                            <p>Con EI - Inteligencia Emocional </p>
+                            <p className="font-black text-[#F4D03F] text-xs"><span>Poporo Design</span></p>
                         </div>
                     </div>
                 );
@@ -378,7 +376,7 @@
                     
                     {showInstallBtn && (
                         <button onClick={handleInstall} className="fixed bottom-20 right-4 z-[60] bg-[#F4D03F] text-[#17202A] px-4 py-3 rounded-full shadow-2xl flex items-center gap-2 font-black text-xs animate-install">
-                            <Icon name="download-cloud" size={18} /> Instalar App
+                            <Icon name="download-cloud" size={18} /> Instalar Voces-App
                         </button>
                     )}
 
@@ -388,7 +386,7 @@
                                 <div className="flex items-center gap-3 flex-1 min-w-0">
                                     <div className={`w-3 h-3 rounded-full ${isPlaying ? 'bg-[#6cd14f] animate-pulse' : 'bg-white/10'}`}></div>
                                     <div className="min-w-0">
-                                        <p className="text-[13px] font-bold text-white/95 truncate leading-tight">Estás escuchando la emisora</p>
+                                        <p className="text-[13px] font-bold text-white/95 truncate leading-tight">Estás Escuchando la Emisora Digital</p>
                                         <p className="text-[11px] font-black text-[#F4D03F] tracking-tighter opacity-90 leading-none mt-0.5">www.VocesCampesinas.co</p>
                                     </div>
                                 </div>
@@ -414,10 +412,10 @@
                                     <div className="absolute inset-0 z-10 p-4 flex flex-col justify-end">
                                         <div className="flex items-center gap-2 mb-1">
                                             <span className="bg-red-600 text-white text-[8px] font-black px-1.5 py-0.5 rounded-full animate-pulse uppercase tracking-widest">En Vivo</span>
-                                            <span className="text-white/60 text-[9px] font-bold tracking-tighter">Transmitiendo:</span>
+                                            <span className="text-white/60 text-[10px] font-bold tracking-tighter">Transmitiendo:</span>
                                         </div>
-                                        <h2 className="text-xl font-black text-white truncate drop-shadow-lg">{currentProgram?.title || "Música de la Tierrita"}</h2>
-                                        <p className="text-[#F4D03F] text-[10px] font-bold italic opacity-90 truncate drop-shadow-md">{currentProgram ? `con ${currentProgram.host}` : "Lo mejor del campo colombiano"}</p>
+                                        <h2 className="text-xl font-black text-white truncate drop-shadow-lg">{currentProgram?.title || "La Música de la Tierrita..."}</h2>
+                                        <p className="text-[#F4D03F] text-[10px] font-bold italic opacity-90 truncate drop-shadow-md">{currentProgram ? `con ${currentProgram.host}` : "Lo Mejor de Nuestro Campo..."}</p>
                                     </div>
                                 </div>
 
@@ -425,7 +423,7 @@
                                     <div className="p-2 bg-[#F4D03F]/10 rounded-xl shrink-0"><Icon name="chevron-right" className="text-[#F4D03F]" size={16} /></div>
                                     <div className="overflow-hidden flex-1">
                                         <div className="flex justify-between items-center gap-2 mb-0.5">
-                                            <p className="text-[7px] font-black text-[#F4D03F]/70 tracking-[0.2em] uppercase">A continuación</p>
+                                            <p className="text-[7px] font-black text-[#F4D03F]/70 tracking-[0.2em] uppercase">A Continuación:</p>
                                             <span className="text-[6px] font-black bg-[#F4D03F] text-[#17202A] px-1.5 py-0.5 rounded whitespace-nowrap">{nextDayInfo}</span>
                                         </div>
                                         <h3 className="font-black text-white text-sm truncate">{nextProgram ? nextProgram.title : "Música de la Tierrita"}</h3>
@@ -435,8 +433,8 @@
 
                                 <div className="px-6 py-6">
                                     <div className="text-center mb-5">
-                                        <h2 className="text-lg font-black text-[#F4D03F] tracking-tighter">Escríbenos</h2>
-                                        <p className="text-[8px] font-bold text-white/30 tracking-[0.2em] italic uppercase">Pedidos y Saludos</p>
+                                        <h2 className="text-lg font-black text-[#F4D03F] tracking-tighter">Interactua con Nosotros</h2>
+                                        <p className="text-[8px] font-bold text-white/30 tracking-[0.2em] italic uppercase">Mensajes y Complacencias</p>
                                     </div>
                                     <div className="flex gap-2 mb-4 bg-black/40 p-1 rounded-xl border border-white/5">
                                         <button onClick={() => setFormType('mensaje')} className={`flex-1 py-2 rounded-lg text-[9px] font-bold transition-all ${formType === 'mensaje' ? 'bg-[#F4D03F] text-black shadow-lg' : 'text-white/40'}`}>Mensaje</button>
@@ -452,7 +450,7 @@
                                         )}
                                         <textarea required placeholder="Escribe aquí..." rows="3" className="w-full glass-card p-3.5 rounded-xl text-xs outline-none focus:border-[#F4D03F]/50 resize-none text-white" onChange={e => setRequestData({...requestData, mensaje: e.target.value})}></textarea>
                                         <button className="w-full bg-[#F4D03F] text-black py-3.5 rounded-xl font-bold text-xs shadow-xl hover:bg-white active:scale-95 transition-all flex items-center justify-center gap-2 mb-4">
-                                            <Icon name="message-circle" size={16} /> Enviar a WhatsApp
+                                            <Icon name="message-circle" size={16} /> Enviar Mensaje a WhatsApp
                                         </button>
                                         <div className="pt-4 mt-2 border-t border-white/5 flex flex-col items-center gap-2.5 text-[10px] text-white/40 font-bold uppercase tracking-widest">
                                             <div className="flex items-center gap-2">
@@ -478,7 +476,7 @@
                                     const progs = SCHEDULE.filter(p => p.category === cat);
                                     if(progs.length === 0) return null;
                                     const todayIdx = new Date().getDay();
-                                    const labels = { propio: 'Producción Local', franja: 'Franjas Musicales', entidad: 'Información Territorial', reemision: 'Reemisiones', pronto: 'Próximamente' };
+                                    const labels = { propio: 'Programas Propios', franja: 'Franjas Musicales', entidad: 'RIT - Red de Información Territorial', reemision: 'Reemisiones', pronto: 'Próximamente' };
                                     const isPronto = cat === 'pronto';
                                     
                                     return (
@@ -495,7 +493,7 @@
                                                                 <span className="text-[#F4D03F] text-[11px] font-bold">{p.start} - {p.end}</span>
                                                                 <div className="flex gap-1">
                                                                     {isPronto ? (
-                                                                        <span className="text-[7px] bg-white/10 text-white/50 px-1.5 py-0.5 rounded font-black tracking-widest uppercase">PRONTO</span>
+                                                                        <span className="text-[7px] bg-white/10 text-white/50 px-1.5 py-0.5 rounded font-black tracking-widest uppercase">Proximamennte</span>
                                                                     ) : (
                                                                         [0,1,2,3,4,5,6].map(dIdx => {
                                                                             if (!p.days.includes(dIdx)) return null;
@@ -524,7 +522,7 @@
 
                         {currentView === 'news' && (
                             <div key="news-view" className="px-4 pb-20 animate-in fade-in duration-500">
-                                <h2 className="text-xl font-bold text-center mb-6 pt-4 text-[#F4D03F]">Últimas Noticias</h2>
+                                <h2 className="text-xl font-bold text-center mb-6 pt-4 text-[#F4D03F]">Conexión Territorial - Información y Noticias</h2>
                                 {loadingNews ? (
                                     <div className="flex flex-col items-center justify-center py-24">
                                         <div className="w-10 h-10 border-4 border-white/5 border-t-[#F4D03F] rounded-full animate-spin mb-6"></div>
@@ -559,8 +557,8 @@
 
                         {currentView === 'social' && (
                             <div key="social-view" className="px-6 animate-in fade-in text-center max-w-md mx-auto">
-                                <h2 className="text-xl font-bold mb-1 pt-4 text-[#F4D03F]">Conéctate</h2>
-                                <p className="text-white/40 text-[10px] font-bold tracking-widest mb-10 italic">#ElCampoNosUne</p>
+                                <h2 className="text-xl font-bold mb-1 pt-4 text-[#F4D03F]">Suigenos y Dale Me Gusta</h2>
+                                <p className="text-white/40 text-[12px] font-bold tracking-widest mb-10 italic">#ElCampoNosUne</p>
                                 <div className="grid grid-cols-1 gap-4 pb-20">
                                     {[
                                         { n: 'Sitio Web', i: 'globe', u: RADIO_CONFIG.webUrl },
@@ -579,6 +577,19 @@
                                             <Icon name="chevron-right" size={14} className="opacity-20" />
                                         </button>
                                     ))}
+                                    
+                                </div>
+                                <div className="pt-4 mt-2 border-t border-white/5 flex flex-col items-center gap-2.5 text-[10px] text-white/40 font-bold uppercase tracking-widest">
+                                            <div className="flex items-center gap-2">
+                                                <Icon name="mail" size={14} className="text-[#F4D03F]" />
+                                                <span>E-Mail:</span>
+                                                <a href={`mailto:${RADIO_CONFIG.email}`} className="text-white/80 lowercase font-normal">{RADIO_CONFIG.email}</a>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <Icon name="message-square" size={14} className="text-[#F4D03F]" />
+                                                <span>WhatsApp:</span>
+                                                <a href={`https://wa.me/${RADIO_CONFIG.whatsapp}`} className="text-white/80">{RADIO_CONFIG.displayWhatsapp}</a>
+                                            </div>
                                 </div>
                             </div>
                         )}
