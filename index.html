@@ -364,7 +364,7 @@
                         <div className="absolute bottom-10 text-center opacity-40 text-[11px] font-medium tracking-tight space-y-1.5 px-4">
                             <p>Un Proyecto Desarrollado</p>
                             <p>Con EI - Inteligencia Emocional </p>
-                            <p className="font-black text-[#F4D03F] text-xs"><span>Poporo Design</span></p>
+                            <p className="font-black text-[#F4D03F] text-2xl"><span>Poporo Design</span></p>
                         </div>
                     </div>
                 );
@@ -415,7 +415,7 @@
                                             <span className="text-white/60 text-[10px] font-bold tracking-tighter">Transmitiendo:</span>
                                         </div>
                                         <h2 className="text-xl font-black text-white truncate drop-shadow-lg">{currentProgram?.title || "La Música de la Tierrita..."}</h2>
-                                        <p className="text-[#F4D03F] text-[10px] font-bold italic opacity-90 truncate drop-shadow-md">{currentProgram ? `con ${currentProgram.host}` : "Lo Mejor de Nuestro Campo..."}</p>
+                                        <p className="text-[#F4D03F] text-[10px] font-bold italic opacity-90 truncate drop-shadow-md">{currentProgram ? ` ${currentProgram.host}` : "Lo Mejor de Nuestro Campo..."}</p>
                                     </div>
                                 </div>
 
@@ -433,7 +433,7 @@
 
                                 <div className="px-6 py-6">
                                     <div className="text-center mb-5">
-                                        <h2 className="text-lg font-black text-[#F4D03F] tracking-tighter">Interactua con Nosotros</h2>
+                                        <h2 className="text-lg font-black text-[#F4D03F] tracking-tighter">Interactúa con Nosotros</h2>
                                         <p className="text-[8px] font-bold text-white/30 tracking-[0.2em] italic uppercase">Mensajes y Complacencias</p>
                                     </div>
                                     <div className="flex gap-2 mb-4 bg-black/40 p-1 rounded-xl border border-white/5">
@@ -476,7 +476,7 @@
                                     const progs = SCHEDULE.filter(p => p.category === cat);
                                     if(progs.length === 0) return null;
                                     const todayIdx = new Date().getDay();
-                                    const labels = { propio: 'Programas Propios', franja: 'Franjas Musicales', entidad: 'RIT - Red de Información Territorial', reemision: 'Reemisiones', pronto: 'Próximamente' };
+                                    const labels = { propio: 'Nuestro Programas', franja: 'Franjas Musicales', entidad: 'RIT - Red de Información Territorial', reemision: 'Reemisiones', pronto: 'Próximamente' };
                                     const isPronto = cat === 'pronto';
                                     
                                     return (
@@ -557,7 +557,7 @@
 
                         {currentView === 'social' && (
                             <div key="social-view" className="px-6 animate-in fade-in text-center max-w-md mx-auto">
-                                <h2 className="text-xl font-bold mb-1 pt-4 text-[#F4D03F]">Sigenos y dale Me Gusta</h2>
+                                <h2 className="text-xl font-bold mb-1 pt-4 text-[#F4D03F]">Siguenos y Dale Me Gusta</h2>
                                 <p className="text-white/40 text-[16px] font-bold tracking-widest mb-10 italic">#ElCampoNosUne</p>
                                 <div className="grid grid-cols-1 gap-4 pb-20">
                                     {[
