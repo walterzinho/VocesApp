@@ -6,7 +6,7 @@
          ======================================================== -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Voces Campesinas Radio</title>
+    <title>Emisora Digital Voces Campesinas</title>
     
     <!-- ========================================================
          SECCIÓN 2: ICONOS Y FAVICON
@@ -186,7 +186,7 @@
             { start: "05:00", end: "06:29", title: "Alborada Campesina", host: "Música Colombiana", org: "Producción Local", category: "franja", days: [1,2,3,4,5,6,0], image: "alborada.jpg" },
             { start: "06:15", end: "06:27", title: "Voces del Cosmos", host: "Horoscopo Semanal", org: "Voces Campesinas", category: "propio", days: [6, 1], image: "campesinos-accion.jpg" },
             { start: "06:30", end: "06:59", title: "Campesinos en Acción", host: "José Antonio González", org: "ANUC La Palma", category: "entidad", days: [6, 2], image: "campesinos-accion.jpg" },
-            { start: "07:00", end: "07:59", title: "Perreo Campesino", host: "Música Carranguera", org: "Voces Campesinas", category: "franja", days: [1,2,4,5,0], image: "perreo-campesino.jpg" },
+            { start: "09:00", end: "09:59", title: "Perreo Campesino", host: "Música Carranguera", org: "Voces Campesinas", category: "franja", days: [1,2,4,5,0], image: "perreo-campesino.jpg" },
             { start: "07:30", end: "10:59", title: "Magazín Región Activa", host: "Jotta Ricón", org: "CorpoActúa", category: "entidad", days: [6, 3], image: "region-activa.jpg" },
             { start: "13:00", end: "13:59", title: "Perreo Campesino", host: "Música Carranguera", org: "Voces Campesinas", category: "franja", days: [1,2,3,4,5,6,0], image: "perreo-tarde.jpg" },
             { start: "19:30", end: "20:30", title: "Renacer Andino", host: "Ramón Olivares", org: "Grupo Cultural de Antofagasta, Chile", category: "entidad", days: [0, 3], image: "renacer-andino.jpg" },
@@ -415,7 +415,7 @@
                                             <span className="text-white/60 text-[10px] font-bold tracking-tighter">Transmitiendo:</span>
                                         </div>
                                         <h2 className="text-xl font-black text-white truncate drop-shadow-lg">{currentProgram?.title || "La Música de la Tierrita..."}</h2>
-                                        <p className="text-[#F4D03F] text-[10px] font-bold italic opacity-90 truncate drop-shadow-md">{currentProgram ? ` ${currentProgram.host}` : "Lo Mejor de Nuestro Campo..."}</p>
+                                        <p className="text-[#F4D03F] text-[10px] font-bold italic opacity-90 truncate drop-shadow-md">{currentProgram ? ` ${currentProgram.org}` : "Lo Mejor de Nuestro Campo..."}</p>
                                     </div>
                                 </div>
 
@@ -427,7 +427,7 @@
                                             <span className="text-[6px] font-black bg-[#F4D03F] text-[#17202A] px-1.5 py-0.5 rounded whitespace-nowrap">{nextDayInfo}</span>
                                         </div>
                                         <h3 className="font-black text-white text-sm truncate">{nextProgram ? nextProgram.title : "Música de la Tierrita"}</h3>
-                                        <p className="text-[9px] text-white/40 italic truncate"><span className="text-[#F4D03F]/80 font-bold">{nextProgram?.start}</span> {nextProgram?.host ? `con ${nextProgram.host}` : "Franja Musical"}</p>
+                                        <p className="text-[9px] text-white/40 italic truncate"><span className="text-[#F4D03F]/80 font-bold">{nextProgram?.start}</span> {nextProgram?.host ? ` ${nextProgram.host}` : "Franja Musical"}</p>
                                     </div>
                                 </div>
 
