@@ -234,38 +234,6 @@
                     }).catch(e => console.warn('SW:', e.message));
                 }
 
-// --- LÓGICA PARA CONTROL EN PANTALLA DE BLOQUEO (MEDIA SESSION) ---
-useEffect(() => {
-    if ('mediaSession' in navigator) {
-        try {
-            // Convertimos la ruta del logo en una URL absoluta para evitar errores de sistema
-            const logoUrl = new URL(RADIO_CONFIG.logoPath, window.location.href).href;
-            
-            navigator.mediaSession.metadata = new MediaMetadata({
-                title: currentProgram?.title || "Música de la Tierrita",
-                artist: currentProgram?.host || "Voces Campesinas Radio",
-                album: "El Campo Nos Une",
-                artwork: [
-                    { src: logoUrl, sizes: '512x512', type: 'image/png' }
-                ]
-            });
-
-            // Conectamos los botones físicos/del sistema con las funciones de la app
-            navigator.mediaSession.setActionHandler('play', togglePlay);
-            navigator.mediaSession.setActionHandler('pause', togglePlay);
-            navigator.mediaSession.setActionHandler('stop', () => {
-                if(audioRef.current) { 
-                    audioRef.current.pause(); 
-                    audioRef.current.src = ""; 
-                }
-                setIsPlaying(false);
-            });
-        } catch (e) {
-            console.warn("Error configurando controles externos:", e);
-        }
-    }
-}, [currentProgram, isPlaying]); // Se actualiza cuando cambia el programa o el estado de reproducción
-
                 
                 window.addEventListener('beforeinstallprompt', (e) => {
                     e.preventDefault();
