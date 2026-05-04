@@ -1,40 +1,24 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <!-- ========================================================
-         SECCIÓN 1: METADATOS Y TÍTULO
-         ======================================================== -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Emisora Digital Voces Campesinas</title>
     
-    <!-- ========================================================
-         SECCIÓN 2: ICONOS Y FAVICON
-         ======================================================== -->
     <link rel="icon" type="image/png" href="LogoVC.png">
-    <link rel="shortcut icon" href="LogoVC.png" type="image/x-icon">
     <link rel="apple-touch-icon" href="android-icon-192x192.png">
-    
-    <!-- ========================================================
-         SECCIÓN 3: CONFIGURACIÓN PWA
-         ======================================================== -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#17202A">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
-    <!-- ========================================================
-         SECCIÓN 4: LIBRERÍAS EXTERNAS
-         ======================================================== -->
+    <!-- Librerías con versiones específicas para estabilidad -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
     
     <style>
-        /* ========================================================
-           SECCIÓN 5: ESTILOS PERSONALIZADOS (CSS)
-           ======================================================== */
         :root {
             --carbon: #17202A;
             --trigo: #F4D03F;
@@ -56,8 +40,9 @@
             color: white;
             font-family: 'Inter', -apple-system, sans-serif;
             overscroll-behavior-y: none;
-            overflow: hidden; 
-            height: 100%;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
             width: 100%;
         }
 
@@ -93,11 +78,9 @@
             position: relative;
             width: 100%;
             height: 120px;
-            border-radius: 0;
-            overflow: hidden;
             background-size: cover;
             background-position: center;
-            transition: all 0.5s ease;
+            background-color: #000;
         }
         .live-card::after {
             content: '';
@@ -111,14 +94,7 @@
             background: rgba(255, 255, 255, 0.03);
             backdrop-filter: blur(10px);
             border-top: 1px solid rgba(244, 208, 63, 0.15);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
-
-        @keyframes slideUp {
-            from { transform: translateY(100px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-        .animate-install { animation: slideUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
     </style>
 </head>
 <body>
@@ -127,7 +103,6 @@
     <script type="text/babel">
         const { useState, useEffect, useRef } = React;
         
-        // COMPONENTE: ICON (SVGS INTERNOS PARA MÁXIMA ESTABILIDAD)
         const Icon = ({ name, size = 20, className = "" }) => {
             const icons = {
                 'radio': <path d="M4.9 19.1a1 1 0 0 0 1.4 0l1.6-1.6a1 1 0 0 0 0-1.4 7 7 0 1 1 8.2 0 1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0 11 11 0 1 0-14.2 0ZM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/>,
@@ -153,17 +128,7 @@
             };
 
             return (
-                <svg 
-                    viewBox="0 0 24 24" 
-                    width={size} 
-                    height={size} 
-                    fill="none" 
-                    stroke="currentColor" 
-                    strokeWidth="2" 
-                    strokeLinecap="round" 
-                    strokeLinejoin="round" 
-                    className={className}
-                >
+                <svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
                     {icons[name] || <circle cx="12" cy="12" r="10" strokeDasharray="4" />}
                 </svg>
             );
@@ -191,8 +156,6 @@
             { start: "13:00", end: "13:59", title: "Perreo Campesino", host: "Música Carranguera", org: "Voces Campesinas", category: "franja", days: [1,2,3,4,5,6,0], image: "perreo-tarde.jpg" },
             { start: "19:30", end: "20:30", title: "Renacer Andino", host: "Ramón Olivares", org: "Grupo Cultural de Antofagasta, Chile", category: "entidad", days: [0, 3], image: "renacer-andino.jpg" },
             { start: "19:30", end: "22:59", title: "Lo Mejor de Región Activa", host: "Lo mejor del 2025 y 2026", org: "CorpoActúa", category: "reemision", days: [5], image: "resumen-region.jpg" },
-            
-            // PROGRAMAS PRÓXIMAMENTE (Ejemplos)
             { start: "--:--", end: "--:--", title: "La Parcela Política", host: "Gran Lanzamiento", org: "Voces Campesinas", category: "pronto", days: [] },
             { start: "--:--", end: "--:--", title: "Sembrando Esperanza", host: "Gran Lanzamiento", org: "Voces Campesinas", category: "pronto", days: [] },
             { start: "--:--", end: "--:--", title: "Palabras del Territorio", host: "Gran Lanzamiento", org: "Voces Campesinas", category: "pronto", days: [] }
@@ -221,19 +184,9 @@
             useEffect(() => {
                 const splashTimer = setTimeout(() => setIsSplash(false), 4500);
 
-                if ('serviceWorker' in navigator && (window.location.protocol === 'https:' || window.location.hostname === 'localhost')) {
-                    navigator.serviceWorker.register('./sw.js').then(reg => {
-                        reg.onupdatefound = () => {
-                            const installingWorker = reg.installing;
-                            installingWorker.onstatechange = () => {
-                                if (installingWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                                    window.location.reload();
-                                }
-                            };
-                        };
-                    }).catch(e => console.warn('SW:', e.message));
+                if ('serviceWorker' in navigator) {
+                    navigator.serviceWorker.register('./sw.js').catch(e => console.warn('SW error:', e));
                 }
-
                 
                 window.addEventListener('beforeinstallprompt', (e) => {
                     e.preventDefault();
@@ -245,7 +198,11 @@
                     const now = new Date();
                     const cur = now.getHours() * 60 + now.getMinutes();
                     const day = now.getDay();
-                    const timeToMin = (t) => { const [h,m] = t.split(':').map(Number); return h*60+m; };
+                    const timeToMin = (t) => { 
+                        if(!t || t === "--:--") return 0;
+                        const [h,m] = t.split(':').map(Number); 
+                        return h*60+m; 
+                    };
                     
                     const prog = SCHEDULE.find(p => p.category !== 'pronto' && cur >= timeToMin(p.start) && cur < timeToMin(p.end) && (p.days ? p.days.includes(day) : true));
                     setCurrentProgram(prog || null);
@@ -277,74 +234,45 @@
             const fetchNews = async () => {
                 setLoadingNews(true);
                 const target = RADIO_CONFIG.bloggerFeed;
-                const proxies = [
-                    `https://api.allorigins.win/get?url=${encodeURIComponent(target + '&t=' + Date.now())}`,
-                    `https://corsproxy.io/?${encodeURIComponent(target)}`
-                ];
-
-                const processData = (json) => {
-                    try {
-                        const entries = json.feed?.entry || [];
-                        const formatted = entries.map(e => {
-                            const link = e.link.find(l => l.rel === 'alternate')?.href || RADIO_CONFIG.webUrl;
-                            let img = "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&q=80&w=400";
-                            if (e.media$thumbnail) img = e.media$thumbnail.url.replace('/s72-c/', '/s640/');
-                            return {
-                                title: e.title.$t,
-                                link: link,
-                                date: new Date(e.published.$t).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }),
-                                thumbnail: img,
-                                summary: e.summary?.$t ? e.summary.$t.replace(/<[^>]*>?/gm, '').substring(0, 110).trim() + '...' : 'Toca para leer más.'
-                            };
-                        });
-                        setNews(formatted);
-                        setLoadingNews(false);
-                    } catch (err) { setLoadingNews(false); }
-                };
-
-                for (const url of proxies) {
-                    try {
-                        const res = await fetch(url);
-                        const raw = await res.json();
-                        const data = (typeof raw.contents === 'string') ? JSON.parse(raw.contents) : raw;
-                        if (data && data.feed) {
-                            processData(data);
-                            return;
-                        }
-                    } catch (e) { }
+                try {
+                    const res = await fetch(`https://api.allorigins.win/get?url=${encodeURIComponent(target)}`);
+                    const raw = await res.json();
+                    const data = JSON.parse(raw.contents);
+                    
+                    const entries = data.feed?.entry || [];
+                    const formatted = entries.map(e => ({
+                        title: e.title.$t,
+                        link: e.link.find(l => l.rel === 'alternate')?.href || RADIO_CONFIG.webUrl,
+                        date: new Date(e.published.$t).toLocaleDateString('es-ES', { day: 'numeric', month: 'short' }),
+                        thumbnail: e.media$thumbnail ? e.media$thumbnail.url.replace('/s72-c/', '/s640/') : "https://via.placeholder.com/400x300?text=Voces+Campesinas",
+                        summary: e.summary?.$t ? e.summary.$t.replace(/<[^>]*>?/gm, '').substring(0, 110) + '...' : 'Toca para leer más.'
+                    }));
+                    setNews(formatted);
+                } catch (err) {
+                    console.error("Error cargando noticias");
+                } finally {
+                    setLoadingNews(false);
                 }
-                setLoadingNews(false);
             };
 
             useEffect(() => {
                 if (currentView === 'news' && news.length === 0) fetchNews();
             }, [currentView]);
 
-            const handleInstall = async () => {
-                if (!deferredPrompt) return;
-                deferredPrompt.prompt();
-                const { outcome } = await deferredPrompt.userChoice;
-                if (outcome === 'accepted') setShowInstallBtn(false);
-                setDeferredPrompt(null);
-            };
-
             const togglePlay = async () => {
-    if (!audioRef.current) return;
-    
-    if (!isPlaying) {
-        if(!audioRef.current.src) audioRef.current.src = RADIO_CONFIG.streamUrl;
-        try {
-            // Esperamos a que el navegador confirme que puede reproducir
-            await audioRef.current.play();
-            setIsPlaying(true);
-        } catch (err) {
-            console.warn("Reproducción impedida momentáneamente");
-        }
-    } else {
-        audioRef.current.pause();
-        setIsPlaying(false);
-    }
-};
+                if (!audioRef.current) return;
+                if (!isPlaying) {
+                    audioRef.current.src = RADIO_CONFIG.streamUrl;
+                    try {
+                        await audioRef.current.play();
+                        setIsPlaying(true);
+                    } catch (err) { console.warn("Error al reproducir"); }
+                } else {
+                    audioRef.current.pause();
+                    audioRef.current.src = "";
+                    setIsPlaying(false);
+                }
+            };
 
             const sendWp = (e) => {
                 e.preventDefault();
@@ -354,168 +282,111 @@
 
             if (isSplash) {
                 return (
-                    <div className="fixed inset-0 bg-[#17202A] z-[100] flex flex-col items-center justify-center text-white p-8 overflow-hidden">
+                    <div className="fixed inset-0 bg-[#17202A] z-[100] flex flex-col items-center justify-center text-white p-8">
                         <div className="relative mb-10 w-48 h-48 animate-speaker">
-                            <img src={RADIO_CONFIG.logoPath} className="w-full h-full object-contain" alt="Logo" />
+                            <img src={RADIO_CONFIG.logoPath} className="w-full h-full object-contain" alt="Logo" onError={(e) => e.target.style.display='none'} />
                         </div>
                         <div className="text-center space-y-2">
                             <p className="text-[#F4D03F] text-[10px] font-black tracking-[0.5em]">Emisora Digital</p>
-                            <h1 className="text-4xl font-black tracking-tighter italic leading-none">Voces Campesinas</h1>
-                            <p className="text-white/40 text-xs font-bold tracking-[0.2em] italic leading-tight">"El Campo Nos Une"</p>
+                            <h1 className="text-4xl font-black italic">Voces Campesinas</h1>
+                            <p className="text-white/40 text-xs font-bold italic">"El Campo Nos Une"</p>
                         </div>
-                        <div className="mt-12 w-32 h-0.5 bg-white/5 rounded-full overflow-hidden">
+                        <div className="mt-12 w-32 h-0.5 bg-white/5 overflow-hidden">
                             <div className="h-full bg-[#F4D03F] w-1/3 animate-loading"></div>
-                        </div>
-                        <div className="absolute bottom-10 text-center opacity-40 text-[11px] font-medium tracking-tight space-y-1.5 px-4">
-                            <p>Un Proyecto Desarrollado</p>
-                            <p>Con EI - Inteligencia Emocional </p>
-                            <p className="font-black text-[#F4D03F] text-2xl"><span>Poporo Design</span></p>
                         </div>
                     </div>
                 );
             }
 
             return (
-                <div className="h-screen h-[100dvh] bg-[#17202A] text-white flex flex-col max-w-lg mx-auto shadow-2xl overflow-hidden relative">
-                    <audio ref={audioRef} preload="auto" />
+                <div className="h-screen flex flex-col max-w-lg mx-auto bg-[#17202A] relative overflow-hidden">
+                    <audio ref={audioRef} preload="none" />
                     
-                    {showInstallBtn && (
-                        <button onClick={handleInstall} className="fixed bottom-20 right-4 z-[60] bg-[#17202A] text-[#F4D03F] px-4 py-3 rounded-full shadow-2xl flex items-center gap-2 font-black text-xs animate-install">
-                            <Icon name="download-cloud" size={18} /> Instalar Voces-App
-                        </button>
-                    )}
-
-                    <div className="fixed top-0 w-full max-w-lg z-50 pointer-events-none">
-                        <div className="pointer-events-auto bg-[#0a0e13]/95 backdrop-blur-3xl border-b border-[#F4D03F]/30 p-3 shadow-2xl">
-                            <div className="flex items-center justify-between gap-4 px-1">
-                                <div className="flex items-center gap-3 flex-1 min-w-0">
-                                    <div className={`w-3 h-3 rounded-full ${isPlaying ? 'bg-[#6cd14f] animate-pulse' : 'bg-white/10'}`}></div>
-                                    <div className="min-w-0">
-                                        <p className="text-[13px] font-bold text-white/95 truncate leading-tight">Estás Escuchando la Emisora Digital</p>
-                                        <p className="text-[11px] font-black text-[#F4D03F] tracking-tighter opacity-90 leading-none mt-0.5">www.VocesCampesinas.co</p>
-                                    </div>
-                                </div>
-                                <div className="flex items-center gap-2">
-                                    <button onClick={() => {audioRef.current.pause(); audioRef.current.src=""; setIsPlaying(false);}} className="w-10 h-10 bg-white/5 text-white/30 rounded-lg flex items-center justify-center transition-colors"><Icon name="square" size={16} className="text-[#C0392B]" /></button>
-                                    <button onClick={togglePlay} className="w-12 h-12 bg-[#F4D03F] text-black rounded-lg flex items-center justify-center shadow-xl active:scale-90 transition-all">
-                                        {isPlaying ? <Icon name="pause" size={24} /> : <Icon name="play" size={24} className="ml-0.5" />}
-                                    </button>
+                    {/* Header Fijo */}
+                    <header className="fixed top-0 w-full max-w-lg z-50 bg-[#0a0e13]/95 backdrop-blur-xl border-b border-[#F4D03F]/30 p-4">
+                        <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-3">
+                                <div className={`w-3 h-3 rounded-full ${isPlaying ? 'bg-green-500 animate-pulse' : 'bg-white/10'}`}></div>
+                                <div>
+                                    <p className="text-xs font-bold opacity-80">Estás escuchando</p>
+                                    <p className="text-sm font-black text-[#F4D03F]">VocesCampesinas.co</p>
                                 </div>
                             </div>
-                            <div className="flex items-center gap-3 mt-3 px-1">
-                                <Icon name={volume == 0 ? "volume-x" : "volume-2"} size={14} className="text-[#F4D03F]/30" />
-                                <input type="range" min="0" max="1" step="0.01" value={volume} onChange={e => {setVolume(e.target.value); audioRef.current.volume = e.target.value;}} className="flex-1 h-1 bg-white/10 rounded-full appearance-none volume-slider cursor-pointer" />
-                                <span className="text-[9px] font-bold text-white/20 w-7 text-right">{Math.round(volume*100)}%</span>
-                            </div>
+                            <button onClick={togglePlay} className="w-12 h-12 bg-[#F4D03F] text-black rounded-lg flex items-center justify-center shadow-lg active:scale-90 transition-all">
+                                {isPlaying ? <Icon name="pause" size={24} /> : <Icon name="play" size={24} className="ml-1" />}
+                            </button>
                         </div>
-                    </div>
+                        <div className="flex items-center gap-3 mt-3">
+                            <input type="range" min="0" max="1" step="0.01" value={volume} onChange={e => {setVolume(e.target.value); audioRef.current.volume = e.target.value;}} className="flex-1 h-1 bg-white/10 rounded-full appearance-none volume-slider" />
+                            <span className="text-[10px] font-bold opacity-30">{Math.round(volume*100)}%</span>
+                        </div>
+                    </header>
 
-                    <main className="flex-1 overflow-y-auto hide-scrollbar pt-[103px] pb-24 px-0">
+                    <main className="flex-1 overflow-y-auto pt-32 pb-20 px-0 hide-scrollbar">
                         {currentView === 'home' && (
-                            <div key="home-view" className="animate-in fade-in duration-700 px-0">
-                                <div className="live-card" style={{ backgroundImage: `url(${currentProgram?.image || 'general-musica.jpg'})` }}>
-                                    <div className="absolute inset-0 z-10 p-4 flex flex-col justify-end">
-                                        <div className="flex items-center gap-2 mb-1">
-                                            <span className="bg-red-600 text-white text-[8px] font-black px-1.5 py-0.5 rounded-full animate-pulse uppercase tracking-widest">En Vivo</span>
-                                            <span className="text-white/60 text-[10px] font-bold tracking-tighter">Transmitiendo:</span>
-                                        </div>
-                                        <h2 className="text-xl font-black text-white truncate drop-shadow-lg">{currentProgram?.title || "La Música de la Tierrita..."}</h2>
-                                        <p className="text-[#F4D03F] text-[10px] font-bold italic opacity-90 truncate drop-shadow-md">{currentProgram ? ` ${currentProgram.org}` : "Lo Mejor de Nuestro Campo..."}</p>
+                            <div className="animate-in fade-in">
+                                <div className="live-card" style={{ backgroundImage: `url(${currentProgram?.image || 'https://via.placeholder.com/600x400?text=Voces+Campesinas'})` }}>
+                                    <div className="absolute bottom-4 left-4 z-20">
+                                        <span className="bg-red-600 text-[8px] font-black px-2 py-1 rounded-full animate-pulse uppercase">Al Aire</span>
+                                        <h2 className="text-xl font-black mt-1">{currentProgram?.title || "La Música de la Tierrita"}</h2>
+                                        <p className="text-[#F4D03F] text-xs italic">{currentProgram?.org || "Sintonía Rural"}</p>
                                     </div>
                                 </div>
 
-                                <div className="next-band py-2.5 px-6 flex items-center gap-4 transition-all">
-                                    <div className="p-2 bg-[#F4D03F]/10 rounded-xl shrink-0"><Icon name="chevron-right" className="text-[#F4D03F]" size={16} /></div>
-                                    <div className="overflow-hidden flex-1">
-                                        <div className="flex justify-between items-center gap-2 mb-0.5">
-                                            <p className="text-[7px] font-black text-[#F4D03F]/70 tracking-[0.2em] uppercase">Escuche a Continuación:</p>
-                                            <span className="text-[6px] font-black bg-[#F4D03F] text-[#17202A] px-1.5 py-0.5 rounded whitespace-nowrap">{nextDayInfo}</span>
-                                        </div>
-                                        <h3 className="font-black text-white text-sm truncate">{nextProgram ? nextProgram.title : "Música de la Tierrita"}</h3>
-                                        <p className="text-[9px] text-white/40 italic truncate"><span className="text-[#F4D03F]/80 font-bold">{nextProgram?.start}</span> {nextProgram?.host ? ` ${nextProgram.host}` : "Franja Musical"}</p>
+                                <div className="next-band p-4 flex items-center gap-4">
+                                    <Icon name="chevron-right" className="text-[#F4D03F]" size={20} />
+                                    <div>
+                                        <p className="text-[8px] font-black text-[#F4D03F]/70 tracking-widest uppercase">A continuación ({nextDayInfo}):</p>
+                                        <h3 className="font-bold text-sm">{nextProgram?.title || "Programación Musical"}</h3>
                                     </div>
                                 </div>
 
-                                <div className="px-6 py-6">
-                                    <div className="text-center mb-5">
-                                        <h2 className="text-lg font-black text-[#F4D03F] tracking-tighter">Interactúa con Nosotros</h2>
-                                        <p className="text-[8px] font-bold text-white/30 tracking-[0.2em] italic uppercase">Mensajes y Complacencias</p>
+                                <div className="p-6">
+                                    <h2 className="text-center font-black text-[#F4D03F] mb-4">INTERACTÚA CON NOSOTROS</h2>
+                                    <div className="flex gap-2 mb-4 bg-black/20 p-1 rounded-xl">
+                                        <button onClick={() => setFormType('mensaje')} className={`flex-1 py-2 rounded-lg text-xs font-bold ${formType === 'mensaje' ? 'bg-[#F4D03F] text-black' : 'opacity-40'}`}>Mensaje</button>
+                                        <button onClick={() => setFormType('cancion')} className={`flex-1 py-2 rounded-lg text-xs font-bold ${formType === 'cancion' ? 'bg-[#F4D03F] text-black' : 'opacity-40'}`}>Canción</button>
                                     </div>
-                                    <div className="flex gap-2 mb-4 bg-black/40 p-1 rounded-xl border border-white/5">
-                                        <button onClick={() => setFormType('mensaje')} className={`flex-1 py-2 rounded-lg text-[9px] font-bold transition-all ${formType === 'mensaje' ? 'bg-[#F4D03F] text-black shadow-lg' : 'text-white/40'}`}>Mensaje</button>
-                                        <button onClick={() => setFormType('cancion')} className={`flex-1 py-2 rounded-lg text-[9px] font-bold transition-all ${formType === 'cancion' ? 'bg-[#F4D03F] text-black shadow-lg' : 'text-white/40'}`}>Canción</button>
-                                    </div>
-                                    <form onSubmit={sendWp} className="space-y-2.5">
-                                        <input required placeholder="¿Cómo te llamas?" className="w-full glass-card p-3.5 rounded-xl text-xs outline-none focus:border-[#F4D03F]/50 text-white" onChange={e => setRequestData({...requestData, nombre: e.target.value})} />
+                                    <form onSubmit={sendWp} className="space-y-3">
+                                        <input required placeholder="Tu nombre" className="w-full glass-card p-4 text-sm bg-transparent outline-none" onChange={e => setRequestData({...requestData, nombre: e.target.value})} />
                                         {formType === 'cancion' && (
-                                            <div className="grid grid-cols-2 gap-2.5">
-                                                <input required placeholder="Canción" className="w-full glass-card p-3.5 rounded-xl text-xs outline-none focus:border-[#F4D03F]/50 text-white" onChange={e => setRequestData({...requestData, cancion: e.target.value})} />
-                                                <input required placeholder="Artista" className="w-full glass-card p-3.5 rounded-xl text-xs outline-none focus:border-[#F4D03F]/50 text-white" onChange={e => setRequestData({...requestData, interprete: e.target.value})} />
+                                            <div className="grid grid-cols-2 gap-2">
+                                                <input required placeholder="Canción" className="glass-card p-4 text-sm bg-transparent outline-none" onChange={e => setRequestData({...requestData, cancion: e.target.value})} />
+                                                <input required placeholder="Artista" className="glass-card p-4 text-sm bg-transparent outline-none" onChange={e => setRequestData({...requestData, interprete: e.target.value})} />
                                             </div>
                                         )}
-                                        <textarea required placeholder="Escribe aquí..." rows="3" className="w-full glass-card p-3.5 rounded-xl text-xs outline-none focus:border-[#F4D03F]/50 resize-none text-white" onChange={e => setRequestData({...requestData, mensaje: e.target.value})}></textarea>
-                                        <button className="w-full bg-[#F4D03F] text-black py-3.5 rounded-xl font-bold text-xs shadow-xl hover:bg-white active:scale-95 transition-all flex items-center justify-center gap-2 mb-4">
-                                            <Icon name="message-circle" size={16} /> Enviar Mensaje a WhatsApp
+                                        <textarea required placeholder="Mensaje..." rows="3" className="w-full glass-card p-4 text-sm bg-transparent outline-none resize-none" onChange={e => setRequestData({...requestData, mensaje: e.target.value})}></textarea>
+                                        <button className="w-full bg-[#F4D03F] text-black py-4 rounded-xl font-bold flex items-center justify-center gap-2">
+                                            <Icon name="message-circle" size={18} /> Enviar al WhatsApp
                                         </button>
-                                        <div className="pt-4 mt-2 border-t border-white/5 flex flex-col items-center gap-2.5 text-[10px] text-white/40 font-bold uppercase tracking-widest">
-                                            <div className="flex items-center gap-2">
-                                                <Icon name="mail" size={14} className="text-[#F4D03F]" />
-                                                <span>E-Mail:</span>
-                                                <a href={`mailto:${RADIO_CONFIG.email}`} className="text-white/80 lowercase font-normal">{RADIO_CONFIG.email}</a>
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                <Icon name="message-square" size={14} className="text-[#F4D03F]" />
-                                                <span>WhatsApp:</span>
-                                                <a href={`https://wa.me/${RADIO_CONFIG.whatsapp}`} className="text-white/80">{RADIO_CONFIG.displayWhatsapp}</a>
-                                            </div>
-                                        </div>
                                     </form>
                                 </div>
                             </div>
                         )}
 
                         {currentView === 'schedule' && (
-                            <div key="schedule-view" className="px-6 pb-20 animate-in fade-in duration-500 overflow-y-auto">
-                                <h2 className="text-xl font-bold text-center mb-6 pt-4 text-[#F4D03F]">Programación</h2>
+                            <div className="p-6 animate-in slide-in-from-bottom-4">
+                                <h2 className="text-xl font-black text-[#F4D03F] mb-6 text-center">PROGRAMACIÓN</h2>
                                 {['propio', 'franja', 'entidad', 'reemision', 'pronto'].map(cat => {
                                     const progs = SCHEDULE.filter(p => p.category === cat);
                                     if(progs.length === 0) return null;
-                                    const todayIdx = new Date().getDay();
-                                    const labels = { propio: 'Nuestro Programas', franja: 'Franjas Musicales', entidad: 'RIT - Red de Información Territorial', reemision: 'Reemisiones', pronto: 'Próximamente' };
-                                    const isPronto = cat === 'pronto';
-                                    
+                                    const labels = { propio: 'Producción Propia', franja: 'Franjas Musicales', entidad: 'Red Territorial', reemision: 'Reemisiones', pronto: 'Próximamente' };
                                     return (
-                                        <div key={cat} className={`mb-8 ${isPronto ? 'opacity-60' : ''}`}>
-                                            <div className="flex items-center gap-2 mb-3 opacity-50">
-                                                <Icon name={isPronto ? "clock" : "calendar"} size={14}/>
-                                                <span className="text-[10px] font-bold tracking-widest italic">{labels[cat]}</span>
-                                            </div>
+                                        <div key={cat} className="mb-8">
+                                            <p className="text-[10px] font-black opacity-30 mb-3 tracking-widest uppercase">{labels[cat]}</p>
                                             <div className="space-y-3">
                                                 {progs.map((p, i) => (
-                                                    <div key={`prog-${cat}-${i}`} className={`glass-card p-4 ${isPronto ? 'border-dashed border-white/20 grayscale pointer-events-none' : ''}`}>
-                                                        <div className="flex justify-between items-center mb-1">
-                                                            <div className="flex items-center gap-3">
-                                                                <span className="text-[#F4D03F] text-[11px] font-bold">{p.start} - {p.end}</span>
-                                                                <div className="flex gap-1">
-                                                                    {isPronto ? (
-                                                                        <span className="text-[7px] bg-white/10 text-white/50 px-1.5 py-0.5 rounded font-black tracking-widest">Proximamennte</span>
-                                                                    ) : (
-                                                                        [0,1,2,3,4,5,6].map(dIdx => {
-                                                                            if (!p.days.includes(dIdx)) return null;
-                                                                            const isToday = dIdx === todayIdx;
-                                                                            return (
-                                                                                <span key={`day-${dIdx}`} className={`text-[7px] px-1.5 py-0.5 rounded font-black transition-all ${isToday ? 'bg-[#F4D03F] text-[#17202A] scale-110 shadow-lg' : 'bg-white/5 text-white/20'}`}>
-                                                                                    {DAYS_SHORT[dIdx]}
-                                                                                </span>
-                                                                            );
-                                                                        })
-                                                                    )}
-                                                                </div>
+                                                    <div key={i} className="glass-card p-4 border-white/5">
+                                                        <div className="flex justify-between items-start mb-2">
+                                                            <span className="text-[#F4D03F] font-bold text-xs">{p.start} - {p.end}</span>
+                                                            <div className="flex gap-1">
+                                                                {p.days.map(d => (
+                                                                    <span key={d} className={`text-[8px] px-1.5 py-0.5 rounded ${new Date().getDay() === d ? 'bg-[#F4D03F] text-black' : 'bg-white/5'}`}>{DAYS_SHORT[d]}</span>
+                                                                ))}
                                                             </div>
-                                                            {currentProgram?.title === p.title && currentProgram?.start === p.start && <div className="bg-[#F4D03F] text-black px-2 py-0.5 rounded text-[8px] font-bold animate-pulse">Al Aire</div>}
                                                         </div>
-                                                        <div className="font-bold text-base mt-1">{p.title}</div>
-                                                        <div className="text-white/40 text-[10px] italic"><span>con {p.host}</span></div>
+                                                        <h3 className="font-bold">{p.title}</h3>
+                                                        <p className="text-xs opacity-40">con {p.host}</p>
                                                     </div>
                                                 ))}
                                             </div>
@@ -526,93 +397,61 @@
                         )}
 
                         {currentView === 'news' && (
-                            <div key="news-view" className="px-4 pb-20 animate-in fade-in duration-500">
-                                <h2 className="text-xl font-bold text-center mb-6 pt-4 text-[#F4D03F]">Conexión Territorial - Información y Noticias</h2>
+                            <div className="p-4 animate-in fade-in">
+                                <h2 className="text-xl font-black text-[#F4D03F] mb-6 text-center">NOTICIAS</h2>
                                 {loadingNews ? (
-                                    <div className="flex flex-col items-center justify-center py-24">
-                                        <div className="w-10 h-10 border-4 border-white/5 border-t-[#F4D03F] rounded-full animate-spin mb-6"></div>
-                                        <p className="text-[10px] font-black text-white/30 uppercase tracking-[0.3em] animate-pulse">Consultando el Blog...</p>
-                                    </div>
+                                    <div className="flex flex-col items-center py-20"><div className="w-8 h-8 border-2 border-[#F4D03F] border-t-transparent rounded-full animate-spin mb-4"></div></div>
                                 ) : (
-                                    <div className="space-y-4 pb-10">
-                                        {news.length > 0 ? news.map((item, idx) => (
-                                            <div key={`news-${idx}`} onClick={() => window.open(item.link, '_blank')} className="glass-card flex gap-4 p-3 hover:bg-white/5 transition-all cursor-pointer border-white/5">
-                                                <div className="shrink-0 w-[90px] h-[90px] rounded-lg overflow-hidden bg-black/40 border border-white/5">
-                                                    <img src={item.thumbnail} alt="Img" className="w-full h-full object-cover" onError={(e) => e.target.src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&q=80&w=300"} />
-                                                </div>
-                                                <div className="flex-1 min-w-0 flex flex-col justify-between py-0.5">
-                                                    <div>
-                                                        <span className="text-[8px] font-black bg-[#F4D03F] text-[#17202A] px-1.5 py-0.5 rounded mb-1.5 inline-block">{item.date}</span>
-                                                        <h3 className="font-bold text-[13px] leading-tight mb-1 line-clamp-2">{item.title}</h3>
-                                                    </div>
-                                                    <p className="text-[10px] text-white/40 italic line-clamp-2">{item.summary}</p>
+                                    <div className="space-y-4">
+                                        {news.map((item, idx) => (
+                                            <div key={idx} onClick={() => window.open(item.link, '_blank')} className="glass-card p-3 flex gap-4 items-center">
+                                                <img src={item.thumbnail} className="w-20 h-20 object-cover rounded-lg" />
+                                                <div className="flex-1">
+                                                    <span className="text-[9px] bg-[#F4D03F] text-black px-2 py-0.5 rounded font-bold">{item.date}</span>
+                                                    <h3 className="font-bold text-sm leading-tight mt-1 line-clamp-2">{item.title}</h3>
                                                 </div>
                                             </div>
-                                        )) : (
-                                            <div className="text-center py-20 px-6">
-                                                <Icon name="newspaper" size={40} className="mx-auto text-white/10 mb-4" />
-                                                <p className="text-sm font-bold text-white/40 mb-6 uppercase tracking-widest font-black">No se pudo conectar con el Blog</p>
-                                                <button onClick={fetchNews} className="bg-white/5 border border-white/10 px-6 py-3 rounded-xl text-xs font-black uppercase hover:bg-white/10 transition-all">Reintentar Carga</button>
-                                            </div>
-                                        )}
+                                        ))}
                                     </div>
                                 )}
                             </div>
                         )}
 
                         {currentView === 'social' && (
-                            <div key="social-view" className="px-6 animate-in fade-in text-center max-w-md mx-auto">
-                                <h2 className="text-xl font-bold mb-1 pt-4 text-[#F4D03F]">Siguenos y Dale Me Gusta</h2>
-                                <p className="text-white/40 text-[16px] font-bold tracking-widest mb-10 italic">#ElCampoNosUne</p>
-                                <div className="grid grid-cols-1 gap-4 pb-20">
-                                    {[
-                                        { n: 'Sitio Web', i: 'globe', u: RADIO_CONFIG.webUrl },
-                                        { n: 'YouTube', i: 'youtube', u: RADIO_CONFIG.youtubeUrl },
-                                        { n: 'Facebook', i: 'facebook', u: "https://www.facebook.com/VocesCampesinas.co" },
-                                        { n: 'Instagram', i: 'instagram', u: "https://www.instagram.com/vocescampesinas.co/" },
-                                        { n: 'TikTok', i: 'tiktok', u: "https://www.tiktok.com/@vocescampesinas.co" },
-                                        { n: 'E-mail', i: 'mail', u: `mailto:${RADIO_CONFIG.email}` }
-                                    ].map(s => (
-                                        <button key={s.n} onClick={() => window.open(s.u, '_blank')} className="glass-card flex items-center justify-between p-5 hover:bg-white/5 transition-all border-white/5">
-                                            <div className="flex items-center gap-4">
-                                                <Icon name={s.i} size={22} className="text-[#F4D03F]" />
-                                                <span className="text-sm font-semibold">{s.n}</span>
-                                            </div>
-                                            <Icon name="chevron-right" size={14} className="opacity-20" />
-                                        </button>
-                                    ))}
-                                     <div className="pt-4 mt-2 border-t border-white/5 flex flex-col items-center gap-2.5 text-[10px] text-white/40 font-bold uppercase tracking-widest">
-                                            <div className="flex items-center gap-2">
-                                                <Icon name="mail" size={14} className="text-[#F4D03F]" />
-                                                <span>E-Mail:</span>
-                                                <a href={`mailto:${RADIO_CONFIG.email}`} className="text-white/80 lowercase font-normal">{RADIO_CONFIG.email}</a>
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                <Icon name="message-square" size={14} className="text-[#F4D03F]" />
-                                                <span>WhatsApp:</span>
-                                                <a href={`https://wa.me/${RADIO_CONFIG.whatsapp}`} className="text-white/80">{RADIO_CONFIG.displayWhatsapp}</a>
-                                            </div>
-                                </div>
-                                </div>
+                            <div className="p-6 text-center space-y-4">
+                                <h2 className="text-xl font-black text-[#F4D03F] mb-10">REDES SOCIALES</h2>
+                                {[
+                                    { n: 'Sitio Web', i: 'globe', u: RADIO_CONFIG.webUrl },
+                                    { n: 'YouTube', i: 'youtube', u: RADIO_CONFIG.youtubeUrl },
+                                    { n: 'Facebook', i: 'facebook', u: "https://www.facebook.com/VocesCampesinas.co" },
+                                    { n: 'WhatsApp', i: 'message-square', u: `https://wa.me/${RADIO_CONFIG.whatsapp}` }
+                                ].map(s => (
+                                    <button key={s.n} onClick={() => window.open(s.u, '_blank')} className="w-full glass-card p-5 flex items-center justify-between">
+                                        <div className="flex items-center gap-4">
+                                            <Icon name={s.i} size={24} className="text-[#F4D03F]" />
+                                            <span className="font-bold">{s.n}</span>
+                                        </div>
+                                        <Icon name="chevron-right" size={16} className="opacity-20" />
+                                    </button>
+                                ))}
                             </div>
                         )}
                     </main>
 
-                    <div className="fixed bottom-0 w-full max-w-lg z-50 pointer-events-none">
-                        <nav className="pointer-events-auto bg-[#0a0e13]/95 backdrop-blur-xl border-t border-white/5 flex justify-around items-center h-14 shadow-2xl">
-                            {[ 
-                                { id: 'home', l: 'Radio', i: 'radio' }, 
-                                { id: 'schedule', l: 'Horarios', i: 'calendar' }, 
-                                { id: 'news', l: 'Noticias', i: 'newspaper' }, 
-                                { id: 'social', l: 'Redes', i: 'share-2' } 
-                            ].map(t => (
-                                <button key={t.id} onClick={() => setCurrentView(t.id)} className={`flex flex-col items-center gap-0.5 transition-all px-6 h-full justify-center ${currentView === t.id ? 'active-tab' : 'text-white/30'}`}>
-                                    <Icon name={t.i} size={20} />
-                                    <span className="text-[9px] font-bold tracking-tight">{t.l}</span>
-                                </button>
-                            ))}
-                        </nav>
-                    </div>
+                    {/* Navbar Inferior */}
+                    <nav className="fixed bottom-0 w-full max-w-lg bg-[#0a0e13]/95 backdrop-blur-xl border-t border-white/5 flex justify-around items-center h-16 z-50">
+                        {[ 
+                            { id: 'home', l: 'Radio', i: 'radio' }, 
+                            { id: 'schedule', l: 'Horarios', i: 'calendar' }, 
+                            { id: 'news', l: 'Noticias', i: 'newspaper' }, 
+                            { id: 'social', l: 'Redes', i: 'share-2' } 
+                        ].map(t => (
+                            <button key={t.id} onClick={() => setCurrentView(t.id)} className={`flex flex-col items-center gap-1 transition-all ${currentView === t.id ? 'text-[#F4D03F]' : 'opacity-30'}`}>
+                                <Icon name={t.i} size={20} />
+                                <span className="text-[10px] font-bold uppercase tracking-tighter">{t.l}</span>
+                            </button>
+                        ))}
+                    </nav>
                 </div>
             );
         };
