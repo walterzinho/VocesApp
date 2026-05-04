@@ -488,7 +488,7 @@
                                         <div key={cat} className={`mb-8 ${isPronto ? 'opacity-60' : ''}`}>
                                             <div className="flex items-center gap-2 mb-3 opacity-50">
                                                 <Icon name={isPronto ? "clock" : "calendar"} size={14}/>
-                                                <span className="text-[10px] font-bold uppercase tracking-widest">{labels[cat]}</span>
+                                                <span className="text-[10px] font-bold tracking-widest">{labels[cat]}</span>
                                             </div>
                                             <div className="space-y-3">
                                                 {progs.map((p, i) => (
@@ -498,7 +498,7 @@
                                                                 <span className="text-[#F4D03F] text-[11px] font-bold">{p.start} - {p.end}</span>
                                                                 <div className="flex gap-1">
                                                                     {isPronto ? (
-                                                                        <span className="text-[7px] bg-white/10 text-white/50 px-1.5 py-0.5 rounded font-black tracking-widest uppercase">Proximamennte</span>
+                                                                        <span className="text-[7px] bg-white/10 text-white/50 px-1.5 py-0.5 rounded font-black tracking-widest">Proximamennte</span>
                                                                     ) : (
                                                                         [0,1,2,3,4,5,6].map(dIdx => {
                                                                             if (!p.days.includes(dIdx)) return null;
