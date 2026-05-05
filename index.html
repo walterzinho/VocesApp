@@ -172,7 +172,7 @@
         const RADIO_CONFIG = {
             name: "Voces Campesinas",
             streamUrl: "https://a1.asurahosting.com/listen/voces_campesinas/radio.mp3",
-            logoPath: "https://github.com/walterzinho/VocesApp/blob/main/LogoVC.png?raw=true", // LÍNEA 158: CAMBIA ESTA RUTA POR LA URL DE GITHUB SI ES NECESARIO
+            logoPath: "https://github.com/walterzinho/VocesApp/blob/main/LogoVC.png?raw=true", // LÍNEA 158
             whatsapp: "573224626138",
             displayWhatsapp: "322.462.6138",
             youtubeUrl: "https://www.youtube.com/@VocesCampesinasCo",
@@ -216,7 +216,7 @@
 
             const audioRef = useRef(null);
 
-            // --- FUNCIÓN DE REPRODUCCIÓN MEJORADA (ASÍNCRONA) ---
+            // --- FUNCIÓN DE REPRODUCCIÓN (ASÍNCRONA PARA MEDIA SESSION) ---
             const togglePlay = async () => {
                 if (!audioRef.current) return;
                 if (!isPlaying) {
@@ -225,7 +225,7 @@
                         await audioRef.current.play();
                         setIsPlaying(true);
                     } catch (err) {
-                        console.warn("Reproducción impedida momentáneamente.");
+                        console.warn("Reproducción interrumpida por el navegador.");
                     }
                 } else {
                     audioRef.current.pause();
@@ -234,12 +234,12 @@
             };
 
             // ========================================================
-            // LÓGICA DE MEDIA SESSION (AUDIO EN SEGUNDO PLANO)
+            // INTEGRACIÓN: MEDIA SESSION (CONTROLES PANTALLA BLOQUEO)
             // ========================================================
             useEffect(() => {
                 if ('mediaSession' in navigator) {
                     try {
-                        // Construcción de URL absoluta segura para evitar errores de renderizado
+                        // Construimos la URL absoluta de forma segura
                         let absoluteLogoUrl = "";
                         try {
                             const baseUrl = window.location.origin + window.location.pathname;
@@ -264,7 +264,7 @@
                             setIsPlaying(false);
                         });
                     } catch (err) {
-                        console.warn("Media Session API no soportada o error de config.");
+                        console.warn("Error configurando Media Session:", err);
                     }
                 }
             }, [currentProgram, isPlaying]);
@@ -508,7 +508,7 @@
 
                         {currentView === 'schedule' && (
                             <div key="schedule-view" className="px-6 pb-20 animate-in fade-in duration-500 overflow-y-auto">
-                                <h2 className="text-xl font-bold text-center mb-6 pt-4 text-[#F4D03F]">Programación</h2>
+                                <h2 className="text-xl font-bold text-center mb-6 pt-4 text-[#F4D03F]">¡Programate con Voces Campesinas!</h2>
                                 {['propio', 'franja', 'entidad', 'reemision', 'pronto'].map(cat => {
                                     const progs = SCHEDULE.filter(p => p.category === cat);
                                     if(progs.length === 0) return null;
@@ -598,12 +598,12 @@
                                 <p className="text-white/40 text-[16px] font-bold tracking-widest mb-10 italic">#ElCampoNosUne</p>
                                 <div className="grid grid-cols-1 gap-4 pb-20">
                                     {[
-                                        { n: 'Sitio Web', i: 'globe', u: RADIO_CONFIG.webUrl },
-                                        { n: 'E-mail', i: 'mail', u: `mailto:${RADIO_CONFIG.email}` },
                                         { n: 'YouTube', i: 'youtube', u: RADIO_CONFIG.youtubeUrl },
                                         { n: 'Facebook', i: 'facebook', u: "https://www.facebook.com/VocesCampesinas.co" },
                                         { n: 'Instagram', i: 'instagram', u: "https://www.instagram.com/vocescampesinas.co/" },
-                                        { n: 'TikTok', i: 'tiktok', u: "https://www.tiktok.com/@vocescampesinas.co" }
+                                        { n: 'TikTok', i: 'tiktok', u: "https://www.tiktok.com/@vocescampesinas.co" },
+                                        { n: 'Sitio Web', i: 'globe', u: RADIO_CONFIG.webUrl },
+                                        { n: 'E-mail', i: 'mail', u: `mailto:${RADIO_CONFIG.email}` }
                                     ].map(s => (
                                         <button key={s.n} onClick={() => window.open(s.u, '_blank')} className="glass-card flex items-center justify-between p-5 hover:bg-white/5 transition-all border-white/5">
                                             <div className="flex items-center gap-4">
