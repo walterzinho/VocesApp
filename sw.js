@@ -1,5 +1,5 @@
-// --- VERSIÓN 0.94 - Actualización Forzada y Estabilidad ---
-const CACHE_NAME = 'voces-campesinas-v0.94';
+// --- VERSIÓN 0.95 - Actualización Forzada y Estabilidad ---
+const CACHE_NAME = 'voces-campesinas-v0.95';
 
 const ASSETS = [
   './',
